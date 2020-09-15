@@ -1,0 +1,35 @@
+{
+    "name": "relive-web",
+    "version": "1.0.0",
+    "description": "Relive app",
+    "main": "index.js",
+    "scripts": {
+        "dev": "next",
+        "build": "next build",
+        "export": "next export"
+    },
+    "author": "Jorge Serras",
+    "license": "ISC",
+    "dependencies": {
+        "@material-ui/core": "^4.11.0",
+        "@material-ui/icons": "^4.9.1",
+        "@zeit/next-css": "^1.0.1",
+        "axios": "^0.19.2",
+        "bcrypt": "^5.0.0",
+        "body-parser": "^1.19.0",
+        "cookie-parser": "^1.4.5",
+        "isomorphic-fetch": "^2.2.1",
+        "jsonwebtoken": "^8.5.1",
+        "moment": "^2.27.0",
+        "mongoose": "^5.10.0",
+        "next": "^9.5.2",
+        "next-cookies": "^2.0.3",
+        "react": "^16.13.1",
+        "react-cookie": "^4.0.3",
+        "react-dom": "^16.13.1",
+        "recharts": "^1.8.5"
+    },
+    "devDependencies": {
+        "dotenv": "^8.2.0"
+    }
+}
