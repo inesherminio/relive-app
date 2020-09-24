@@ -77,6 +77,7 @@ const Imovel = ({ params }) => {
                                 })
                         })
                         .catch(err => {
+                            setData({ ...res.data, imovirtual: {state: {code: 'Error'}}, statistics: null })
                             setLoading(false)
                             console.log(err)
                         })
@@ -134,6 +135,7 @@ const Imovel = ({ params }) => {
     if (loading)
         return <Loading message="A carregar dados do imovel" />;
 
+
     return (
         <Layout
             mainTitle="Propriedades Relive"
@@ -178,7 +180,7 @@ const Imovel = ({ params }) => {
                             <Button variant="contained" color="primary" onClick={() => handleClickOpen()}>
                                 Publicar
                             </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual && data.imovirtual.state.code === 'active'} onClick={() => postTest()}>
+                            <Button variant="contained" color="primary" disabled={data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error')} onClick={() => postTest()}>
                                 Post Test Imovirtual Advert
                             </Button>
                         </Grid>

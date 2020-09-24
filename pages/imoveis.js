@@ -71,6 +71,7 @@ const Imoveis = () => {
     const [imoProperties, setImoProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [ImoError, setImoError] = useState(null);
 
     /*     const handlePage = async (i) => {
             try {
@@ -120,13 +121,13 @@ const Imoveis = () => {
                 setLoading(false)
             })
             .catch(err => {
-                setError(true)
+                setImoError(true)
                 console.log(err)
             })
     }, []);
 
     if (error)
-        return <Error message="Could not load properties, Please try later" />;
+        return <Error message="Could not load Website properties, Please try later" />;
     if (loading)
         return <Loading message="A carregar imoveis" />;
     return (
@@ -171,6 +172,10 @@ const Imoveis = () => {
                         </List>
                     </Grid>
                     <Grid item xs={6}>
+                        {ImoError ?
+                        'Could not load Imovirtual Properties, App connection missing or something wrong'
+                    :
+                    <>
                         <h2>Número total de propriedades Imovirtual: {imoProperties.length}</h2>
                         <List className="lista">
                             {imoProperties.map((b, i) => {
@@ -203,6 +208,8 @@ const Imoveis = () => {
                                 )
                             })}
                         </List>
+                        </>
+                        }
                     </Grid>
                 </Grid>
             </Container>
