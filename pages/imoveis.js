@@ -163,7 +163,7 @@ const Imoveis = (props) => {
             <Container maxWidth="lg" className="container">
                 <Grid container>
                     <Grid item xs={12}>
-                        <h2>Número total de propriedades Website: {properties.length}</h2>
+                        <h2>Número total de propriedades no Website: {properties.length}</h2>
                         {ImoError &&
                             <h3>Could not load Imovirtual, App connection missing or something wrong</h3>
                         }

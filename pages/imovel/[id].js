@@ -58,7 +58,9 @@ const Imovel = ({ params, signedIn }) => {
 
     const validateTest = () => {
         axios.post(`/imovirtual/advert/validate`, {
-            data: { /* Advert Data to Validate */
+            data: data /* Sending data from WP */
+            
+            /* {
                 "title": "Apartamento moderno em Cabanelas",
                 "description": "Imóvel em Cabanelas com boa luminosidade, mobilado, 2 casas de banho. Este anúncio é um teste, não deve ser considerado.",
                 "category_urn": "urn:concept:apartments-for-sale",
@@ -113,7 +115,7 @@ const Imovel = ({ params, signedIn }) => {
                     "id": "123456",
                     "reference_id": "TEST1234"
                 }
-            }
+            } */
         })
             .then(res => {
                 setInfo('')
