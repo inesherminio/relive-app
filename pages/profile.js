@@ -53,7 +53,7 @@ const StyledTableRow = withStyles((theme) => ({
 const Profile = (props) => {
     const [notifications, setNotifications] = useState([]);
     const [authLink, setAuthLink] = useState(null);
-    const [prof, setProf] = useState(null);
+    const [prof, setProf] = useState({ data: [] });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -91,6 +91,7 @@ const Profile = (props) => {
         <Layout
             mainTitle="Propriedades Relive"
             footer={`Relive Copyright ${new Date().getFullYear()} | All rights reserved`}
+            signedIn={props.signedIn}
         >
             <Head>
                 <title>Profile Imovirtual</title>

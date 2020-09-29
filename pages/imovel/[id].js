@@ -39,7 +39,7 @@ const data2 = [
 
 
 
-const Imovel = ({ params }) => {
+const Imovel = ({ params, signedIn }) => {
     const [data, setData] = useState([]);
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -53,6 +53,73 @@ const Imovel = ({ params }) => {
             })
             .catch(err => {
                 console.log(err)
+            })
+    }
+
+    const validateTest = () => {
+        axios.post(`/imovirtual/advert/validate`, {
+            data: { /* Advert Data to Validate */
+                "title": "Apartamento moderno em Cabanelas",
+                "description": "Imóvel em Cabanelas com boa luminosidade, mobilado, 2 casas de banho. Este anúncio é um teste, não deve ser considerado.",
+                "category_urn": "urn:concept:apartments-for-sale",
+                "contact": {
+                    "name": "Joaquim Silva",
+                    "phone": "918888888",
+                    "email": "joaquim.silva@testmail.com",
+                    "photo": "https://i.imgur.com/9Em2tky.png"
+                },
+                "price": {
+                    "value": 123000,
+                    "currency": "EUR"
+                },
+                "location": {
+                    "lat": 41.573603,
+                    "lon": -7.214126,
+                    "exact": true
+                },
+                "images": [
+                    {
+                        "url": "https://i.imgur.com/WozSfdQg.jpg"
+                    },
+                    {
+                        "url": "https://i.imgur.com/3YNg1bI.jpg"
+                    }
+                ],
+                "movie_url": "https://www.youtube.com/watch?v=2me2WO6C1J8",
+                "attributes": [
+                    {
+                        "urn": "urn:concept:area-m2",
+                        "value": "110"
+                    },
+                    {
+                        "urn": "urn:concept:price-negotiable",
+                        "value": "urn:concept:yes"
+                    },
+                    {
+                        "urn": "urn:concept:number-of-rooms",
+                        "value": "urn:concept:3"
+                    },
+                    {
+                        "urn": "urn:concept:characteristics",
+                        "value": "urn:concept:alarm"
+                    },
+                    {
+                        "urn": "urn:concept:characteristics",
+                        "value": "urn:concept:central-heating"
+                    }
+                ],
+                "site_urn": "urn:site:imovirtualcom",
+                "custom_fields": {
+                    "id": "123456",
+                    "reference_id": "TEST1234"
+                }
+            }
+        })
+            .then(res => {
+                setInfo('')
+            })
+            .catch(err => {
+                setInfo(err.response.data.error)
             })
     }
 
@@ -77,7 +144,7 @@ const Imovel = ({ params }) => {
                                 })
                         })
                         .catch(err => {
-                            setData({ ...res.data, imovirtual: {state: {code: 'Error'}}, statistics: null })
+                            setData({ ...res.data, imovirtual: { state: { code: 'Error' } }, statistics: null })
                             setLoading(false)
                             console.log(err)
                         })
@@ -128,6 +195,14 @@ const Imovel = ({ params }) => {
             .catch(err => setInfo('Ocorreu algum erro'))
     }
 
+    const getTax = () => {
+        axios.get(`/imovirtual/taxonomy`)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => setInfo('Ocorreu algum erro'))
+    }
+
     const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
 
 
@@ -140,6 +215,7 @@ const Imovel = ({ params }) => {
         <Layout
             mainTitle="Propriedades Relive"
             footer={`Relive Copyright ${new Date().getFullYear()} | All rights reserved`}
+            signedIn={signedIn}
         >
             <Head>
                 <title>Propriedades Relive</title>
@@ -163,7 +239,7 @@ const Imovel = ({ params }) => {
                                     }}
                                 >
                                     <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" name="Data"/>
+                                    <XAxis dataKey="date" name="Data" />
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
@@ -182,6 +258,12 @@ const Imovel = ({ params }) => {
                             </Button>
                             <Button variant="contained" color="primary" disabled={data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error')} onClick={() => postTest()}>
                                 Post Test Imovirtual Advert
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={!data.imovirtual || data.imovirtual.state.code === 'Error'} onClick={() => validateTest()}>
+                                Validate Imovirtual
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={!data.imovirtual || data.imovirtual.state.code === 'Error'} onClick={() => getTax()}>
+                                Get Taxonomy
                             </Button>
                         </Grid>
                         <p style={{ color: 'red', fontWeight: 500, textAlign: 'center' }}>

@@ -57,6 +57,9 @@ export default createMuiTheme({
             }
         },
         MuiChip: {
+            root: {
+                margin: '0 4px'
+            },
             colorSecondary: {
                 color: '#fff'
             }

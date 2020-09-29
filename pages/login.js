@@ -38,9 +38,9 @@ const Login = (props) => {
 
     return (
         <Layout
-
             mainTitle="Propriedades Relive"
             footer={`Relive Copyright ${new Date().getFullYear()} | All rights reserved`}
+            signedIn={props.signedIn}
         >
             <Head>
                 <title>Propriedades Relive</title>

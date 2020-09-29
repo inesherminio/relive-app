@@ -17,6 +17,8 @@ import Error from "./_error";
 
 import PublicIcon from '@material-ui/icons/Public'
 import CreateIcon from '@material-ui/icons/Create'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import CancelIcon from '@material-ui/icons/Cancel'
 
 import { auth } from '../utils/auth'
 
@@ -66,7 +68,7 @@ site.imoveis().then(d => console.log(d)); */
 
 
 
-const Imoveis = () => {
+const Imoveis = (props) => {
     const [properties, setProperties] = useState([]);
     const [imoProperties, setImoProperties] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -108,20 +110,39 @@ const Imoveis = () => {
     useEffect(() => {
         axios.get("/api/imoveis")
             .then(res => {
-                setProperties(res.data)
-                setLoading(false)
+
+                axios.get("/imovirtual/adverts/database")
+                    .then(res2 => {
+                        const newData = []
+                        let auxFind = false
+                        res.data.map(d => {
+                            auxFind = false
+                            res2.data.adverts.map(a => {
+                                if (a.website == d.id)
+                                    return auxFind = true
+                            })
+                            newData.push({
+                                ...d,
+                                inImovirtual: auxFind
+                            })
+                        })
+                        console.log(newData)
+                        setProperties(newData)
+                        /*  setImoProperties(res2.data.adverts || []) */
+                        setLoading(false)
+                    })
+                    .catch(err => {
+                        setProperties(res.data)
+                        setImoError(true)
+                        setLoading(false)
+                        console.log(err)
+                    })
+
+                /* setProperties(res.data) */
+                /* setLoading(false) */
             })
             .catch(err => {
                 setError(true)
-                console.log(err)
-            })
-        axios.get("/imovirtual/adverts")
-            .then(res => {
-                setImoProperties(res.data.data || [])
-                setLoading(false)
-            })
-            .catch(err => {
-                setImoError(true)
                 console.log(err)
             })
     }, []);
@@ -134,14 +155,18 @@ const Imoveis = () => {
         <Layout
             mainTitle="Propriedades Relive"
             footer={`Relive Copyright ${new Date().getFullYear()} | All rights reserved`}
+            signedIn={props.signedIn}
         >
             <Head>
                 <title>Propriedades Relive</title>
             </Head>
             <Container maxWidth="lg" className="container">
                 <Grid container>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                         <h2>Número total de propriedades Website: {properties.length}</h2>
+                        {ImoError &&
+                            <h3>Could not load Imovirtual, App connection missing or something wrong</h3>
+                        }
                         <List className="lista">
                             {properties.map((b, i) => {
                                 const media = b._embedded["wp:featuredmedia"]
@@ -164,6 +189,11 @@ const Imoveis = () => {
                                                     icon={b.status === 'publish' ? <PublicIcon /> : <CreateIcon />}
                                                     label={b.status === 'publish' ? "Publicado" : b.status === 'pending' ? "Revisão pendente" : "Rascunho"}
                                                 />
+                                                <Chip
+                                                    color={b.inImovirtual ? "primary" : "secondary"}
+                                                    icon={b.inImovirtual ? <CheckCircleIcon /> : <CancelIcon />}
+                                                    label="Imovirtual"
+                                                />
                                             </ListItemSecondaryAction>
                                         </ListItem>
                                     </Link>
@@ -171,46 +201,26 @@ const Imoveis = () => {
                             })}
                         </List>
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                         {ImoError ?
-                        'Could not load Imovirtual Properties, App connection missing or something wrong'
-                    :
-                    <>
-                        <h2>Número total de propriedades Imovirtual: {imoProperties.length}</h2>
-                        <List className="lista">
-                            {imoProperties.map((b, i) => {
-                                return (
-                                    <div key={b.uuid}>
-                                        <a href={b.state.url} target="_blank">State: {b.state.code}</a>
-                                        <p>{b.uuid}</p>
-                                        <a onClick={() => deleteAdvert(b.uuid)}>Delete Advert</a>
-                                        {/* <Link as={`/imovel/${b.id}`} href={`/imovel/?id=${b.id}`} key={b.id}>
-                                        <ListItem key={b.id} button className="lista-item">
-                                            <ListItemAvatar>
-                                                <Avatar
-                                                    className="avatar"
-                                                    variant="rounded"
-                                                    alt={`Propriedade ID:${b.id}`}
-                                                    src={media && media[0].source_url}
-                                                />
-                                            </ListItemAvatar>
-                                            <h2 className="lista-text">{b.title.rendered}</h2>
-                                            <ListItemSecondaryAction>
-                                                <Chip
-                                                    color={b.status === 'publish' ? "primary" : b.status === 'pending' ? "secondary" : "default"}
-                                                    icon={b.status === 'publish' ? <PublicIcon /> : <CreateIcon />}
-                                                    label={b.status === 'publish' ? "Publicado" : b.status === 'pending' ? "Revisão pendente" : "Rascunho"}
-                                                />
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    </Link> */}
-                                    </div>
-                                )
-                            })}
-                        </List>
-                        </>
+                            'Could not load Imovirtual Properties, App connection missing or something wrong'
+                            :
+                            <>
+                                <h2>Número total de propriedades Imovirtual: {imoProperties.length}</h2>
+                                <List className="lista">
+                                    {imoProperties.map((b, i) => {
+                                        return (
+                                            <div key={b.uuid}>
+                                                <a href={b.state.url} target="_blank">State: {b.state.code}</a>
+                                                <p>{b.uuid}</p>
+                                                <a onClick={() => deleteAdvert(b.uuid)}>Delete Advert</a>
+                                            </div>
+                                        )
+                                    })}
+                                </List>
+                            </>
                         }
-                    </Grid>
+                    </Grid> */}
                 </Grid>
             </Container>
         </Layout>
