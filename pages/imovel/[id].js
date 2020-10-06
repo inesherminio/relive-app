@@ -59,7 +59,7 @@ const Imovel = ({ params, signedIn }) => {
     const validateTest = () => {
         axios.post(`/imovirtual/advert/validate`, {
             data: data /* Sending data from WP */
-            
+
             /* {
                 "title": "Apartamento moderno em Cabanelas",
                 "description": "Imóvel em Cabanelas com boa luminosidade, mobilado, 2 casas de banho. Este anúncio é um teste, não deve ser considerado.",
@@ -170,6 +170,24 @@ const Imovel = ({ params, signedIn }) => {
         setOpen(false);
     };
 
+    const activateAdvert = () => { /* DIZER QUE SÓ DEPOIS DO WEBHOOK É QUE SABEMOS SE DEU */
+        axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/activate`)
+            .then(res => {
+                console.log(res)
+                setInfo('')
+            })
+            .catch(err => setInfo('Ocorreu algum erro'))
+    }
+
+    const deactivateAdvert = () => { /* DIZER QUE SÓ DEPOIS DO WEBHOOK É QUE SABEMOS SE DEU */
+        axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/deactivate`)
+            .then(res => {
+                console.log(res)
+                setInfo('')
+            })
+            .catch(err => setInfo('Ocorreu algum erro'))
+    }
+
     const handlePending = () => {
         const newStatus = status === "draft" ? "pending" : "draft"
         axios.put(`/api/imoveis/${data.id}`, {
@@ -256,10 +274,13 @@ const Imovel = ({ params, signedIn }) => {
                                 {status === "pending" ? 'Guardar como "Rascunho"' : 'Guardar como "Revisão Pendente"'}
                             </Button>
                             <Button variant="contained" color="primary" onClick={() => handleClickOpen()}>
-                                Publicar
+                                Publicar Website
                             </Button>
                             <Button variant="contained" color="primary" disabled={data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error')} onClick={() => postTest()}>
                                 Post Test Imovirtual Advert
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={data.imovirtual && !data.imovirtual.state.code} onClick={() => data.imovirtual && data.imovirtual.state.code === 'active' ? deactivateAdvert() : activateAdvert()}>
+                                {data.imovirtual && data.imovirtual.state.code === 'active' ? 'Deactivate Imovirtual' : 'Activate Imovirtual'}
                             </Button>
                             <Button variant="contained" color="primary" disabled={!data.imovirtual || data.imovirtual.state.code === 'Error'} onClick={() => validateTest()}>
                                 Validate Imovirtual

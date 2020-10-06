@@ -95,7 +95,8 @@ const Profile = (props) => {
             })
         axios.get("/imovirtual/notifications")
             .then(res => {
-                setNotifications(res.data.notifications)
+                const nots = res.data.notifications.reverse() /* Latest First */
+                setNotifications(nots)
             })
             .catch(err => {
                 console.log(err)
@@ -169,7 +170,8 @@ const Profile = (props) => {
                                 <StyledTableCell align="left">Flow</StyledTableCell>
                                 <StyledTableCell align="left">Tipo</StyledTableCell>
                                 <StyledTableCell align="left">Status</StyledTableCell>
-                                <StyledTableCell align="left">Data Criação</StyledTableCell>
+                                <StyledTableCell align="left">Imovel</StyledTableCell>
+                                <StyledTableCell align="left">Data Alteração</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -181,7 +183,8 @@ const Profile = (props) => {
                                     <StyledTableCell align="left">{row.flow}</StyledTableCell>
                                     <StyledTableCell align="left">{row.event_type}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data ? advertCode(row.data.code) : null}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.data ? moment(row.data.created_at).format('lll') : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.website_id ? <Button color="primary" href={`/imovel/${row.website_id}`}>RE-{row.website_id}</Button> : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data ? moment(row.data.recorded_at).format('lll') : null}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
