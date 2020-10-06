@@ -119,11 +119,12 @@ const Imoveis = (props) => {
                             auxFind = false
                             res2.data.adverts.map(a => {
                                 if (a.website == d.id)
-                                    return auxFind = true
+                                    return auxFind = a.status
                             })
                             newData.push({
                                 ...d,
-                                inImovirtual: auxFind
+                                inImovirtual: auxFind,
+                                
                             })
                         })
                         console.log(newData)
@@ -191,8 +192,8 @@ const Imoveis = (props) => {
                                                 />
                                                 <Chip
                                                     color={b.inImovirtual ? "primary" : "secondary"}
-                                                    icon={b.inImovirtual ? <CheckCircleIcon /> : <CancelIcon />}
-                                                    label="Imovirtual"
+                                                    icon={b.inImovirtual === 'active' ? <CheckCircleIcon /> : <CancelIcon />}
+                                                    label={b.inImovirtual === 'active' ? "Imovirtual" : b.inImovirtual ? "Imovirtual " + b.inImovirtual : "Imovirtual"}
                                                 />
                                             </ListItemSecondaryAction>
                                         </ListItem>
