@@ -32,6 +32,23 @@ import CreateIcon from '@material-ui/icons/Create'
 
 const csrfState = Math.random().toString(36).substring(7);
 
+const advertCode = (code) => {
+    switch (code) {
+        case 'active':
+            return <span style={{ color: 'green' }}>Anúncio criado e publicado!</span>
+        case 'unpaid':
+            return <span style={{ color: 'crimson', fontWeight: 500 }}>Anúncio não criado, falta de slots ou Package</span>
+        case 'removed_by_user':
+            return <span style={{ color: 'blue' }}>Anúncio removido por utilizador</span>
+        case 'outdated_by_package':
+            return <span style={{ color: 'crimson', fontWeight: 500 }}>Package expirado, será publicado automaticamente ao activar Imovirtual</span>
+        default: /* moderated
+        removed_by_moderator
+        outdated */
+            return <span style={{ color: 'blue' }}>Anuncio sofreu moderação ' + code + ': não está Público</span>
+    }
+}
+
 const StyledTableCell = withStyles((theme) => ({
     head: {
         backgroundColor: theme.palette.primary.main,
@@ -143,31 +160,33 @@ const Profile = (props) => {
                     </Table>
                 </TableContainer>
 
-                <h1>Notificações Imovirtual</h1>
-                <List className="lista">
-                    {notifications.map((b, i) => {
-                        return (
-                            <ListItem key={b.timestamp} button className="lista-item">
-                                {/* <ListItemAvatar>
-                                        <Avatar
-                                            className="avatar"
-                                            variant="rounded"
-                                            alt={`Propriedade ID:${b.id}`}
-                                            src={media && media[0].source_url}
-                                        />
-                                    </ListItemAvatar> */}
-                                <h2 className="lista-text">{b.provider}: Flow {b.flow}, Event {b.event_type}, Code {b.data.code}</h2>
-                                {/* <ListItemSecondaryAction>
-                                    <Chip
-                                        color={b.status === 'publish' ? "primary" : b.status === 'pending' ? "secondary" : "default"}
-                                        icon={b.status === 'publish' ? <PublicIcon /> : <CreateIcon />}
-                                        label={b.status === 'publish' ? "Publicado" : b.status === 'pending' ? "Revisão pendente" : "Rascunho"}
-                                    />
-                                </ListItemSecondaryAction> */}
-                            </ListItem>
-                        )
-                    })}
-                </List>
+                <h1>Notificações</h1>
+                <TableContainer component={Paper}>
+                    <Table className="tabela" aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>Plataforma</StyledTableCell>
+                                <StyledTableCell align="left">Flow</StyledTableCell>
+                                <StyledTableCell align="left">Tipo</StyledTableCell>
+                                <StyledTableCell align="left">Status</StyledTableCell>
+                                <StyledTableCell align="left">Data Criação</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {notifications.map((row, i) => (
+                                <StyledTableRow key={i}>
+                                    <StyledTableCell component="th" scope="row">
+                                        {row.provider}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="left">{row.flow}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.event_type}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data ? advertCode(row.data.code) : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data ? moment(row.data.created_at).format('lll') : null}</StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             </Container>
         </Layout>
     );
