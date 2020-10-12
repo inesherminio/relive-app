@@ -118,10 +118,10 @@ const Imovel = ({ params, signedIn }) => {
             } */
         })
             .then(res => {
-                setInfo('')
+                setInfo(res.data.message)
             })
             .catch(err => {
-                setInfo(err.response.data.error)
+                setInfo('ERROR: ' + err.response.data.error)
             })
     }
 
