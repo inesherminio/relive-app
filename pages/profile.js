@@ -42,10 +42,12 @@ const advertCode = (code) => {
             return <span style={{ color: 'blue' }}>Anúncio removido por utilizador</span>
         case 'outdated_by_package':
             return <span style={{ color: 'crimson', fontWeight: 500 }}>Package expirado, será publicado automaticamente ao activar Imovirtual</span>
+        case undefined:
+            return <span style={{ color: 'crimson' }}>Anuncio sofre erro desconhecido</span>
         default: /* moderated
         removed_by_moderator
         outdated */
-            return <span style={{ color: 'blue' }}>Anuncio sofreu moderação ' + code + ': não está Público</span>
+            return <span style={{ color: 'blue' }}>{'Anuncio sofreu moderação ' + code + ': não está Público'}</span>
     }
 }
 

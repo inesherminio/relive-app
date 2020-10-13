@@ -3,7 +3,7 @@ import { CookiesProvider, useCookies } from 'react-cookie';
 import CssBaseline from '@material-ui/core/CssBaseline'
 import axios from "axios";
 
-axios.defaults.baseURL = 'http://localhost:8080/' /*https://relive-api.herokuapp.com*/
+axios.defaults.baseURL = 'https://relive-api.herokuapp.com' /*http://localhost:8080/*/
 
 axios.interceptors.request.use(async function (response) {
     /* if (!axios.defaults.headers.common['Authorization']) {
