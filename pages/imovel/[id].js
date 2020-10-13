@@ -42,6 +42,7 @@ const data2 = [
 const Imovel = ({ params, signedIn }) => {
     const [data, setData] = useState([]);
     const [open, setOpen] = useState(false);
+    const [publish, setPublish] = useState(false);
     const [loading, setLoading] = useState(true);
     const [info, setInfo] = useState('');
     const [status, setStatus] = useState(null);
@@ -71,7 +72,6 @@ const Imovel = ({ params, signedIn }) => {
     }
 
     const validateImo = () => {
-
         setLoading(true)
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
@@ -80,10 +80,13 @@ const Imovel = ({ params, signedIn }) => {
                 })
                     .then(res2 => {
                         setLoading(false)
+                        setPublish(true)
                         setInfo(res2.data.message)
                     })
                     .catch(err => {
                         setLoading(false)
+                        setPublish(false)
+                        console.log(err)
                         setInfo('ERROR Validating Property')
                     })
             })
@@ -132,8 +135,8 @@ const Imovel = ({ params, signedIn }) => {
             })
     }, []);
 
-    const handleClickOpen = () => {
-        setOpen(true);
+    const handleClickOpen = (type) => {
+        setOpen(type);
     };
 
     const handleClose = () => {
@@ -159,7 +162,7 @@ const Imovel = ({ params, signedIn }) => {
     }
 
     const handlePending = () => {
-        const newStatus = status === "draft" ? "pending" : "draft"
+        const newStatus = "pending"// status === "draft" ? "pending" : "draft"
         axios.put(`/api/imoveis/${data.id}`, {
             ...data,
             status: newStatus
@@ -185,16 +188,10 @@ const Imovel = ({ params, signedIn }) => {
             .catch(err => setInfo('Ocorreu algum erro'))
     }
 
-    const getTax = () => {
-        axios.get(`/imovirtual/taxonomy`)
-            .then(res => {
-                console.log(res)
-            })
-            .catch(err => setInfo('Ocorreu algum erro'))
-    }
-
     const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
 
+
+    const isWebsitePending = status === "pending" || status === "draft"
 
 
     if (loading)
@@ -208,14 +205,14 @@ const Imovel = ({ params, signedIn }) => {
             signedIn={signedIn}
         >
             <Head>
-                <title>Propriedades Relive</title>
+            <title>Prop RE-{params.id}</title>
             </Head>
             <Container maxWidth="lg" className="container">
                 {data.title ?
                     <>
                         <h2>{data.title.rendered}</h2>
-                        <h3>Estado Website: <span style={{ color: 'red' }}>{displayStatus}</span></h3>
-                        <h3>Estado Imovirtual: <span style={{ color: 'red' }}>{data.imovirtual ? data.imovirtual.state.code : 'Not published'}</span></h3>
+                        <h3>Estado Website: <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span></h3>
+                        <h3>Estado Imovirtual: <span style={{ color: data.imovirtual && data.imovirtual.state.code === 'active' ? '#82ca9d' : 'red' }}>{data.imovirtual ? data.imovirtual.state.code : 'Not published'}</span></h3>
 
                         {data.statistics &&
                             <>
@@ -239,24 +236,24 @@ const Imovel = ({ params, signedIn }) => {
                                 </LineChart>
                             </>
                         }
-                        <Grid container justify="flex-end">
-                            <Button variant="contained" color="secondary" onClick={() => handlePending()}>
+                        <h2>Ações</h2>
+                        <Grid container justify="flex-end" className="action-container">
+                            {/* <Button variant="contained" color="secondary" onClick={() => handlePending()}>
                                 {status === "pending" ? 'Guardar como "Rascunho"' : 'Guardar como "Revisão Pendente"'}
-                            </Button>
-                            <Button variant="contained" color="primary" onClick={() => handleClickOpen()}>
-                                Publicar Website
-                            </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error')} onClick={() => postImo()}>
-                                Post Test Imovirtual Advert
-                            </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual && !data.imovirtual.state.code} onClick={() => data.imovirtual && data.imovirtual.state.code === 'active' ? deactivateAdvert() : activateAdvert()}>
-                                {data.imovirtual && data.imovirtual.state.code === 'active' ? 'Deactivate Imovirtual' : 'Activate Imovirtual'}
+                            </Button> */}
+
+                            <Button variant="contained" color={isWebsitePending ? "primary" : "secondary"} onClick={() => isWebsitePending ? handleClickOpen('wp') : handlePending()}>
+                                {isWebsitePending ? "Publicar no Website" : "Guardar como 'Revisão Pendente'"}
                             </Button>
                             <Button variant="contained" color="primary" disabled={data.imovirtual && data.imovirtual.state.code === 'Error'} onClick={() => validateImo()}>
-                                Validate Imovirtual
+                                Validar Imovirtual
                             </Button>
-                            <Button variant="contained" color="primary" disabled={!data.imovirtual || data.imovirtual.state.code === 'Error'} onClick={() => getTax()}>
-                                Get Taxonomy
+                            {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
+                            <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error'))} onClick={() => handleClickOpen('imo')}>
+                                {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={(data.imovirtual && !data.imovirtual.state.code) || !data.imovirtual} onClick={() => data.imovirtual && data.imovirtual.state.code === 'active' ? deactivateAdvert() : activateAdvert()}>
+                                {data.imovirtual && data.imovirtual.state.code === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
                         <p style={{ color: 'red', fontWeight: 500, textAlign: 'center' }}>
@@ -277,14 +274,14 @@ const Imovel = ({ params, signedIn }) => {
                 <DialogTitle id="alert-dialog-slide-title">Tens a certeza que queres publicar?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Se clicares "Sim", o imovel ficará publico no Website da Relive e todo o processo de publicação no Imovirtual e Idealista será começado.
+                        Se clicares "Sim", o imovel ficará publico no {open === 'wp' ? ' Website da Relive' : ' Imovirtual'}.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Não
                     </Button>
-                    <Button onClick={handlePublish} color="primary">
+                    <Button onClick={open === 'wp' ? handlePublish : postImo} color="primary">
                         Sim
                     </Button>
                 </DialogActions>

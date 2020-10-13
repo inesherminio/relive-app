@@ -8,6 +8,10 @@
     cursor: pointer;
 }
 
+.action-container {
+    margin-top: 24px;
+}
+
 .container {
     padding: 32px 0 !important;
 }

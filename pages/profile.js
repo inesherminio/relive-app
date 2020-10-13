@@ -103,6 +103,14 @@ const Profile = (props) => {
             })
     }, []);
 
+    const getTax = () => {
+        axios.get(`/imovirtual/taxonomy`)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => console.log(err))
+    }
+
     if (loading)
         return <Loading message="A carregar profile" />;
     return (
@@ -123,6 +131,10 @@ const Profile = (props) => {
                         Autenticar conta do Imovirtual
                     </Button>
                 }
+
+                <Button variant="contained" color="primary" disabled={prof.data.length === 0} onClick={() => getTax()}>
+                    Get Taxonomy
+                </Button>
 
                 <h3>Verifica se já possuis a nossa app <a target="_blank" href="https://www.imovirtual.com/contapessoal/definicoes-de-conta/#aplicacoes">aqui</a>, se visualizar a app Relive, revoga e clica em "Autenticar conta do Imovirtual"</h3>
 
