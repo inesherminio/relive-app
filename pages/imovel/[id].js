@@ -46,83 +46,53 @@ const Imovel = ({ params, signedIn }) => {
     const [info, setInfo] = useState('');
     const [status, setStatus] = useState(null);
 
-    const postTest = () => {
-        axios.post(`/imovirtual/advert/${params.id}`)
+    const postImo = () => {
+        setLoading(true)
+        axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
-
+                axios.post(`/imovirtual/advert/${params.id}`, {
+                    data: res.data
+                })
+                    .then(res => {
+                        setLoading(false)
+                        setStatus(res.data.status)
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        console.log(err)
+                        setInfo('ERROR Posting in Imovirtual: ' + err.response.data.error)
+                    })
             })
             .catch(err => {
+                setLoading(false)
+                setInfo('ERROR Getting Property Info: ' + err.response.data.error)
                 console.log(err)
             })
     }
 
-    const validateTest = () => {
-        axios.post(`/imovirtual/advert/validate`, {
-            data: data /* Sending data from WP */
+    const validateImo = () => {
 
-            /* {
-                "title": "Apartamento moderno em Cabanelas",
-                "description": "Imóvel em Cabanelas com boa luminosidade, mobilado, 2 casas de banho. Este anúncio é um teste, não deve ser considerado.",
-                "category_urn": "urn:concept:apartments-for-sale",
-                "contact": {
-                    "name": "Joaquim Silva",
-                    "phone": "918888888",
-                    "email": "joaquim.silva@testmail.com",
-                    "photo": "https://i.imgur.com/9Em2tky.png"
-                },
-                "price": {
-                    "value": 123000,
-                    "currency": "EUR"
-                },
-                "location": {
-                    "lat": 41.573603,
-                    "lon": -7.214126,
-                    "exact": true
-                },
-                "images": [
-                    {
-                        "url": "https://i.imgur.com/WozSfdQg.jpg"
-                    },
-                    {
-                        "url": "https://i.imgur.com/3YNg1bI.jpg"
-                    }
-                ],
-                "movie_url": "https://www.youtube.com/watch?v=2me2WO6C1J8",
-                "attributes": [
-                    {
-                        "urn": "urn:concept:area-m2",
-                        "value": "110"
-                    },
-                    {
-                        "urn": "urn:concept:price-negotiable",
-                        "value": "urn:concept:yes"
-                    },
-                    {
-                        "urn": "urn:concept:number-of-rooms",
-                        "value": "urn:concept:3"
-                    },
-                    {
-                        "urn": "urn:concept:characteristics",
-                        "value": "urn:concept:alarm"
-                    },
-                    {
-                        "urn": "urn:concept:characteristics",
-                        "value": "urn:concept:central-heating"
-                    }
-                ],
-                "site_urn": "urn:site:imovirtualcom",
-                "custom_fields": {
-                    "id": "123456",
-                    "reference_id": "TEST1234"
-                }
-            } */
-        })
+        setLoading(true)
+        axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
-                setInfo(res.data.message)
+                axios.post(`/imovirtual/advert/validate`, {
+                    data: res.data
+                })
+                    .then(res2 => {
+                        setLoading(false)
+                        setInfo(res2.data.message)
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        setInfo('ERROR Validating Property')
+                    })
             })
             .catch(err => {
-                setInfo('ERROR: ' + err.response.data.error)
+                setLoading(false)
+                setInfo('ERROR Getting Property')
+                console.log(err)
             })
+
     }
 
 
@@ -276,13 +246,13 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color="primary" onClick={() => handleClickOpen()}>
                                 Publicar Website
                             </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error')} onClick={() => postTest()}>
+                            <Button variant="contained" color="primary" disabled={data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error')} onClick={() => postImo()}>
                                 Post Test Imovirtual Advert
                             </Button>
                             <Button variant="contained" color="primary" disabled={data.imovirtual && !data.imovirtual.state.code} onClick={() => data.imovirtual && data.imovirtual.state.code === 'active' ? deactivateAdvert() : activateAdvert()}>
                                 {data.imovirtual && data.imovirtual.state.code === 'active' ? 'Deactivate Imovirtual' : 'Activate Imovirtual'}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={!data.imovirtual || data.imovirtual.state.code === 'Error'} onClick={() => validateTest()}>
+                            <Button variant="contained" color="primary" disabled={data.imovirtual && data.imovirtual.state.code === 'Error'} onClick={() => validateImo()}>
                                 Validate Imovirtual
                             </Button>
                             <Button variant="contained" color="primary" disabled={!data.imovirtual || data.imovirtual.state.code === 'Error'} onClick={() => getTax()}>

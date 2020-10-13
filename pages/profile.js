@@ -86,7 +86,7 @@ const Profile = (props) => {
             })
         axios.get("/imovirtual/profile")
             .then(res => {
-                setProf(res.data)
+                setProf(res.data || [])
                 setLoading(false)
             })
             .catch(err => {
