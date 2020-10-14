@@ -56,10 +56,11 @@ const Imovel = ({ params, signedIn }) => {
                 })
                     .then(res => {
                         setLoading(false)
-                        setStatus(res.data.status)
+                        handleClose()
                     })
                     .catch(err => {
                         setLoading(false)
+                        handleClose()
                         console.log(err)
                         setInfo('ERROR Posting in Imovirtual: ' + err.response.data.error)
                     })
@@ -67,6 +68,7 @@ const Imovel = ({ params, signedIn }) => {
             .catch(err => {
                 setLoading(false)
                 setInfo('ERROR Getting Property Info: ' + err.response.data.error)
+                handleClose()
                 console.log(err)
             })
     }
@@ -115,6 +117,7 @@ const Imovel = ({ params, signedIn }) => {
                                 })
                                 .catch(err => {
                                     setLoading(false)
+                                    setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
                                     console.log(err)
                                 })
                         })
