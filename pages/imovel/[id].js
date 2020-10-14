@@ -252,7 +252,7 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color={isWebsitePending ? "primary" : "secondary"} onClick={() => isWebsitePending ? handleClickOpen('wp') : handlePending()}>
                                 {isWebsitePending ? "Publicar no Website" : "Guardar como 'Revisão Pendente'"}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual} onClick={() => validateImo()}>
+                            <Button variant="contained" color="primary" disabled={!data.imovirtual} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
