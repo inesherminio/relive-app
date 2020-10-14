@@ -252,14 +252,14 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color={isWebsitePending ? "primary" : "secondary"} onClick={() => isWebsitePending ? handleClickOpen('wp') : handlePending()}>
                                 {isWebsitePending ? "Publicar no Website" : "Guardar como 'Revisão Pendente'"}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual && ImoStatusCode === 'Error'} onClick={() => validateImo()}>
+                            <Button variant="contained" color="primary" disabled={data.imovirtual} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
-                            <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode === 'active' || ImoStatusCode === 'Error'))} onClick={() => handleClickOpen('imo')}>
+                            <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
                                 {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={(data.imovirtual && !ImoStatusCode) || !data.imovirtual} onClick={() => data.imovirtual && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
+                            <Button variant="contained" color="primary" disabled={(data.imovirtual && !ImoStatusCode) || !data.imovirtual || ImoStatusCode === 'Error'} onClick={() => data.imovirtual && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
                                 {data.imovirtual && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
