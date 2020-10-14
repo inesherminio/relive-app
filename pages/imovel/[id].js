@@ -117,12 +117,14 @@ const Imovel = ({ params, signedIn }) => {
                                 })
                                 .catch(err => {
                                     setLoading(false)
+                                    setStatus(res.data.status)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
                                     console.log(err)
                                 })
                         })
                         .catch(err => {
                             setData({ ...res.data, imovirtual: { state: { code: 'Error' } }, statistics: null })
+                            setStatus(res.data.status)
                             setLoading(false)
                             console.log(err)
                         })
