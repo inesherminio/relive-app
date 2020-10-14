@@ -185,6 +185,7 @@ const Profile = (props) => {
                                 <StyledTableCell align="left">Tipo</StyledTableCell>
                                 <StyledTableCell align="left">Status</StyledTableCell>
                                 <StyledTableCell align="left">Imovel</StyledTableCell>
+                                <StyledTableCell align="left">Detalhe</StyledTableCell>
                                 <StyledTableCell align="left">Data Alteração</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -198,6 +199,7 @@ const Profile = (props) => {
                                     <StyledTableCell align="left">{row.event_type}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data ? advertCode(row.data.code) : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.website_id ? <Button color="primary" href={`/imovel/${row.website_id}`}>RE-{row.website_id}</Button> : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data && row.data.validation ? row.data.validation[0].detail : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data ? (row.data.recorded_at ? moment(row.data.recorded_at).format('lll') : moment.unix(row.timestamp).format("lll")) : null}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
