@@ -196,6 +196,8 @@ const Imovel = ({ params, signedIn }) => {
 
     const isWebsitePending = status === "pending" || status === "draft"
 
+    const ImoStatusCode = data.imovirtual && data.imovirtual.state ? data.imovirtual.state.code : 'Error'
+
 
     if (loading)
         return <Loading message="A carregar dados do imovel" />;
@@ -215,7 +217,7 @@ const Imovel = ({ params, signedIn }) => {
                     <>
                         <h2>{data.title.rendered}</h2>
                         <h3>Estado Website: <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span></h3>
-                        <h3>Estado Imovirtual: <span style={{ color: data.imovirtual && data.imovirtual.state.code === 'active' ? '#82ca9d' : 'red' }}>{data.imovirtual ? data.imovirtual.state.code : 'Not published'}</span></h3>
+                        <h3>Estado Imovirtual: <span style={{ color: data.imovirtual && ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{data.imovirtual ? ImoStatusCode : 'Not published'}</span></h3>
 
                         {data.statistics &&
                             <>
@@ -248,15 +250,15 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color={isWebsitePending ? "primary" : "secondary"} onClick={() => isWebsitePending ? handleClickOpen('wp') : handlePending()}>
                                 {isWebsitePending ? "Publicar no Website" : "Guardar como 'Revisão Pendente'"}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={data.imovirtual && data.imovirtual.state.code === 'Error'} onClick={() => validateImo()}>
+                            <Button variant="contained" color="primary" disabled={data.imovirtual && ImoStatusCode === 'Error'} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
-                            <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (data.imovirtual.state.code === 'active' || data.imovirtual.state.code === 'Error'))} onClick={() => handleClickOpen('imo')}>
+                            <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode === 'active' || ImoStatusCode === 'Error'))} onClick={() => handleClickOpen('imo')}>
                                 {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={(data.imovirtual && !data.imovirtual.state.code) || !data.imovirtual} onClick={() => data.imovirtual && data.imovirtual.state.code === 'active' ? deactivateAdvert() : activateAdvert()}>
-                                {data.imovirtual && data.imovirtual.state.code === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
+                            <Button variant="contained" color="primary" disabled={(data.imovirtual && !ImoStatusCode) || !data.imovirtual} onClick={() => data.imovirtual && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
+                                {data.imovirtual && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
                         <p style={{ color: 'red', fontWeight: 500, textAlign: 'center' }}>
