@@ -163,6 +163,38 @@ const Imovel = ({ params, signedIn }) => {
 
     }
 
+    const activateAdvert = () => {
+        axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/activate`)
+            .then(res => {
+                console.log(res)
+                setStatusImo('Ativação pendente')
+                setInfo({
+                    error: false,
+                    msg: 'Pedido de ativação enviado'
+                })
+            })
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
+    }
+
+    const deactivateAdvert = () => {
+        axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/deactivate`)
+            .then(res => {
+                console.log(res)
+                setStatusImo('Desativação pendente')
+                setInfo({
+                    error: false,
+                    msg: 'Pedido de desativação enviado'
+                })
+            })
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
+    }
+
 
     useEffect(() => {
         axios.get(`/api/imoveis/${params.id}`)
@@ -214,35 +246,6 @@ const Imovel = ({ params, signedIn }) => {
         setOpen(false);
     };
 
-    const activateAdvert = () => { /* DIZER QUE SÓ DEPOIS DO WEBHOOK É QUE SABEMOS SE DEU */
-        axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/activate`)
-            .then(res => {
-                console.log(res)
-                setInfo({
-                    error: false,
-                    msg: ''
-                })
-            })
-            .catch(err => setInfo({
-                error: true,
-                msg: 'Ocorreu algum erro'
-            }))
-    }
-
-    const deactivateAdvert = () => { /* DIZER QUE SÓ DEPOIS DO WEBHOOK É QUE SABEMOS SE DEU */
-        axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/deactivate`)
-            .then(res => {
-                console.log(res)
-                setInfo({
-                    error: false,
-                    msg: ''
-                })
-            })
-            .catch(err => setInfo({
-                error: true,
-                msg: 'Ocorreu algum erro'
-            }))
-    }
 
     const handlePending = () => {
         const newStatus = "pending"// status === "draft" ? "pending" : "draft"
@@ -289,7 +292,7 @@ const Imovel = ({ params, signedIn }) => {
     const isWebsitePending = status === "pending" || status === "draft"
 
     const ImoStatusCode = statusImo || 'Not published'
-
+    const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
     if (loading)
         return <Loading message={loading} />;
@@ -348,17 +351,17 @@ const Imovel = ({ params, signedIn }) => {
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
 
                             {ImoStatusCode === 'active' ?
-                                <Button variant="contained" color="primary" disabled={!publish || (statusImo && (ImoStatusCode !== 'active'))} onClick={() => handleClickOpen('imoPut')}>
+                                <Button variant="contained" color="primary" disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} onClick={() => handleClickOpen('imoPut')}>
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
-                                <Button variant="contained" color="primary" disabled={!publish || (statusImo && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
+                                <Button variant="contained" color="primary" disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
 
 
-                            <Button variant="contained" color="primary" disabled={(statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} onClick={() => statusImo && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
+                            <Button variant="contained" color="primary" disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} onClick={() => statusImo && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
                                 {statusImo && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
