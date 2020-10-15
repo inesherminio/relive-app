@@ -383,7 +383,7 @@ const Imovel = ({ params, signedIn }) => {
                                 </LineChart>
                             </>
                         }
-                        <h2>Ações Website</h2>
+                        <h2>Editar Website</h2>
                         <Grid container justify="flex-end" className="action-container">
                             {/* <Button variant="contained" color="secondary" onClick={() => handlePending()}>
                                 {status === "pending" ? 'Guardar como "Rascunho"' : 'Guardar como "Revisão Pendente"'}
@@ -392,7 +392,7 @@ const Imovel = ({ params, signedIn }) => {
                                 {isWebsitePending ? "Publicar no Website" : "Guardar como 'Revisão Pendente'"}
                             </Button>
                         </Grid>
-                        <h2>Ações Imovirtual</h2>
+                        <h2>Editar Imovirtual</h2>
                         <Grid container justify="flex-end" className="action-container">
                             <Button variant="contained" color="primary" disabled={!statusImo} onClick={() => validateImo()}>
                                 Validar Imovirtual
