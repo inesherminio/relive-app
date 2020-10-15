@@ -37,6 +37,9 @@ const data2 = [
 ];
 
 
+/* SEE imoCode ||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
+
+
 
 
 const Imovel = ({ params, signedIn }) => {
@@ -320,7 +323,7 @@ const Imovel = ({ params, signedIn }) => {
                                 <LineChart
                                     width={500}
                                     height={300}
-                                    data={data2} /* data.statistics */
+                                    data={data.statistics}
                                     margin={{
                                         top: 5, right: 30, left: 20, bottom: 5,
                                     }}
