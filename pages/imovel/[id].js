@@ -78,7 +78,7 @@ const Imovel = ({ params, signedIn }) => {
         setLoading(true)
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
-                axios.put(`/imovirtual/advert/${params.id}`, {
+                axios.put(`/imovirtual/advert/${data.imovirtual.uuid}`, {
                     data: res.data
                 })
                     .then(res => {
@@ -318,7 +318,7 @@ const Imovel = ({ params, signedIn }) => {
                 <DialogTitle id="alert-dialog-slide-title">Tens a certeza que queres publicar?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Se clicares "Sim", o imovel ficará publico no {open === 'wp' ? ' Website da Relive' : open === 'imoPut' ? ' Imovirtual e com informação tualizada do website' : ' Imovirtual'}.
+                        Se clicares "Sim", o imovel ficará publico no {open === 'wp' ? ' Website da Relive' : open === 'imoPut' ? ' Imovirtual e com informação atualizada do website' : ' Imovirtual'}.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
