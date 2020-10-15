@@ -43,13 +43,16 @@ const Imovel = ({ params, signedIn }) => {
     const [data, setData] = useState([]);
     const [open, setOpen] = useState(false);
     const [publish, setPublish] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [info, setInfo] = useState('');
+    const [loading, setLoading] = useState("A carregar dados do imovel");
+    const [info, setInfo] = useState({
+        error: true,
+        msg: null
+    });
     const [status, setStatus] = useState(null);
     const [statusImo, setStatusImo] = useState(null);
 
     const postImo = () => {
-        setLoading(true)
+        setLoading("A enviar pedido de publicação ao Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
                 axios.post(`/imovirtual/advert/${params.id}`, {
@@ -59,25 +62,35 @@ const Imovel = ({ params, signedIn }) => {
                         setLoading(false)
                         setPublish(false)
                         setStatusImo('Publicação pendente')
+                        setInfo({
+                            error: false,
+                            msg: 'Pedido enviado com sucesso'
+                        })
                         handleClose()
                     })
                     .catch(err => {
                         setLoading(false)
                         handleClose()
                         console.log(err)
-                        setInfo('ERROR Posting in Imovirtual: ' + err.response.data.error)
+                        setInfo({
+                            error: true,
+                            msg: 'ERROR Posting in Imovirtual: ' + err.response.data.error
+                        })
                     })
             })
             .catch(err => {
                 setLoading(false)
-                setInfo('ERROR Getting Property Info: ' + err.response.data.error)
+                setInfo({
+                    error: true,
+                    msg: 'ERROR Getting Property Info: ' + err.response.data.error
+                })
                 handleClose()
                 console.log(err)
             })
     }
 
     const putImo = () => {
-        setLoading(true)
+        setLoading("A enviar pedido de atualização ao Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
                 axios.put(`/imovirtual/advert/${data.imovirtual.uuid}`, {
@@ -87,25 +100,35 @@ const Imovel = ({ params, signedIn }) => {
                         setLoading(false)
                         setPublish(false)
                         setStatusImo('Atualização pendente')
+                        setInfo({
+                            error: false,
+                            msg: 'Pedido enviado com sucesso'
+                        })
                         handleClose()
                     })
                     .catch(err => {
                         setLoading(false)
                         handleClose()
                         console.log(err)
-                        setInfo('ERROR Putting in Imovirtual: ' + err.response.data.error)
+                        setInfo({
+                            error: true,
+                            msg: 'ERROR Putting in Imovirtual: ' + err.response.data.error
+                        })
                     })
             })
             .catch(err => {
                 setLoading(false)
-                setInfo('ERROR Getting Property Info: ' + err.response.data.error)
+                setInfo({
+                    error: true,
+                    msg: 'ERROR Getting Property Info: ' + err.response.data.error
+                })
                 handleClose()
                 console.log(err)
             })
     }
 
     const validateImo = () => {
-        setLoading(true)
+        setLoading("A enviar pedido de validação ao Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
                 axios.post(`/imovirtual/advert/validate`, {
@@ -114,18 +137,27 @@ const Imovel = ({ params, signedIn }) => {
                     .then(res2 => {
                         setLoading(false)
                         setPublish(true)
-                        setInfo(res2.data.message)
+                        setInfo({
+                            error: true,
+                            msg: res2.data.message
+                        })
                     })
                     .catch(err => {
                         setLoading(false)
                         setPublish(false)
                         console.log(err)
-                        setInfo('ERROR Validating Property')
+                        setInfo({
+                            error: true,
+                            msg: 'ERROR Validating Property'
+                        })
                     })
             })
             .catch(err => {
                 setLoading(false)
-                setInfo('ERROR Getting Property')
+                setInfo({
+                    error: true,
+                    msg: 'ERROR Getting Property'
+                })
                 console.log(err)
             })
 
@@ -186,18 +218,30 @@ const Imovel = ({ params, signedIn }) => {
         axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/activate`)
             .then(res => {
                 console.log(res)
-                setInfo('')
+                setInfo({
+                    error: false,
+                    msg: ''
+                })
             })
-            .catch(err => setInfo('Ocorreu algum erro'))
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
     }
 
     const deactivateAdvert = () => { /* DIZER QUE SÓ DEPOIS DO WEBHOOK É QUE SABEMOS SE DEU */
         axios.post(`/imovirtual/advert/${data.imovirtual.uuid}/deactivate`)
             .then(res => {
                 console.log(res)
-                setInfo('')
+                setInfo({
+                    error: false,
+                    msg: ''
+                })
             })
-            .catch(err => setInfo('Ocorreu algum erro'))
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
     }
 
     const handlePending = () => {
@@ -208,10 +252,16 @@ const Imovel = ({ params, signedIn }) => {
         })
             .then(res => {
                 console.log(res)
-                setInfo('')
+                setInfo({
+                    error: false,
+                    msg: ''
+                })
                 setStatus(newStatus)
             })
-            .catch(err => setInfo('Ocorreu algum erro'))
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
     }
 
     const handlePublish = () => {
@@ -221,10 +271,16 @@ const Imovel = ({ params, signedIn }) => {
         })
             .then(res => {
                 console.log(res)
-                setInfo('Pedido de publicação enviado')
+                setInfo({
+                    error: false,
+                    msg: 'Pedido de publicação enviado'
+                })
                 setOpen(false);
             })
-            .catch(err => setInfo('Ocorreu algum erro'))
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
     }
 
     const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
@@ -236,7 +292,7 @@ const Imovel = ({ params, signedIn }) => {
 
 
     if (loading)
-        return <Loading message="A carregar dados do imovel" />;
+        return <Loading message={loading} />;
 
 
     return (
@@ -306,8 +362,8 @@ const Imovel = ({ params, signedIn }) => {
                                 {statusImo && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
-                        <p style={{ color: 'red', fontWeight: 500, textAlign: 'center' }}>
-                            {info}
+                        <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
+                            {info.msg}
                         </p>
                     </>
                     :
