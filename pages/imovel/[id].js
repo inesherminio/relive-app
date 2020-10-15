@@ -397,12 +397,12 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color="primary" disabled={!statusImo} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
-                            {isAvailable(statusImo, 'post') ?
-                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'post')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} */ onClick={() => handleClickOpen('imoPut')}>
+                            {isAvailable(statusImo, 'put') ?
+                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'put')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} */ onClick={() => handleClickOpen('imoPut')}>
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
-                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'put')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
+                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'post')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
