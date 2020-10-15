@@ -211,13 +211,13 @@ const Imovel = ({ params, signedIn }) => {
                                 .then(res3 => {
                                     setLoading(false)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: res3.data.data })
-                                    setStatusImo(res2.data.data.state.code)
+                                    setStatusImo(res2.data.imoCode) /* data.state.code */
                                     setStatus(res.data.status)
                                 })
                                 .catch(err => {
                                     setLoading(false)
                                     setStatus(res.data.status)
-                                    setStatusImo(res2.data.data.state.code)
+                                    setStatusImo(res2.data.imoCode) /* data.state.code */
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
                                     console.log(err)
                                 })
