@@ -223,7 +223,7 @@ const Profile = (props) => {
                                     <StyledTableCell align="left">{row.website_id ? <Button color="primary" href={`/imovel/${row.website_id}`}>RE-{row.website_id}</Button> : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data && row.data.validation ? row.data.validation[0].detail : null}</StyledTableCell>
                                     {/* ///////////////////////// */}
-                                    <StyledTableCell align="left">{row.data ? (row.data.recorded_at ? moment(row.data.recorded_at).format('lll') : moment.unix(parseInt(row.timestamp)).format("lll")) : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data ? (row.data.recorded_at ? moment(row.data.recorded_at).format('lll') : moment.unix(parseInt(row.timestamp)*1000).format("lll")) : null}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
