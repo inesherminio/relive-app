@@ -32,6 +32,28 @@ import CreateIcon from '@material-ui/icons/Create'
 
 const csrfState = Math.random().toString(36).substring(7);
 
+/* STATUS CODES OF ADVERTS:
+
+pending         // POST
+pending_update  // PUT
+pending_activate
+pending_deactivate
+pending_delete  // DELETE
+
+SE CONTER pending DIZER E BLOQUEAR AÇOES
+
+active
+unpaid
+removed_by_user
+outdated_by_package
+moderated
+removed_by_moderator
+outdated
+
+any error
+
+*/
+
 const advertCode = (code) => {
     switch (code) {
         case 'active':

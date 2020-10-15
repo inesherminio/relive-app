@@ -56,6 +56,7 @@ const Imovel = ({ params, signedIn }) => {
                 })
                     .then(res => {
                         setLoading(false)
+                        setPublish(false)
                         handleClose()
                     })
                     .catch(err => {
@@ -63,6 +64,33 @@ const Imovel = ({ params, signedIn }) => {
                         handleClose()
                         console.log(err)
                         setInfo('ERROR Posting in Imovirtual: ' + err.response.data.error)
+                    })
+            })
+            .catch(err => {
+                setLoading(false)
+                setInfo('ERROR Getting Property Info: ' + err.response.data.error)
+                handleClose()
+                console.log(err)
+            })
+    }
+
+    const putImo = () => {
+        setLoading(true)
+        axios.get(`/api/imoveis/${params.id}`)
+            .then(res => {
+                axios.put(`/imovirtual/advert/${params.id}`, {
+                    data: res.data
+                })
+                    .then(res => {
+                        setLoading(false)
+                        setPublish(false)
+                        handleClose()
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        handleClose()
+                        console.log(err)
+                        setInfo('ERROR Putting in Imovirtual: ' + err.response.data.error)
                     })
             })
             .catch(err => {
@@ -212,7 +240,7 @@ const Imovel = ({ params, signedIn }) => {
             signedIn={signedIn}
         >
             <Head>
-            <title>Prop RE-{params.id}</title>
+                <title>Prop RE-{params.id}</title>
             </Head>
             <Container maxWidth="lg" className="container">
                 {data.title ?
@@ -256,9 +284,18 @@ const Imovel = ({ params, signedIn }) => {
                                 Validar Imovirtual
                             </Button>
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
-                            <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
-                                {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
-                            </Button>
+
+                            {ImoStatusCode === 'active' ?
+                                <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode !== 'active'))} onClick={() => handleClickOpen('imoPut')}>
+                                    {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
+                                </Button>
+                                :
+                                <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
+                                    {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
+                                </Button>
+                            }
+
+
                             <Button variant="contained" color="primary" disabled={(data.imovirtual && !ImoStatusCode) || !data.imovirtual || ImoStatusCode === 'Error'} onClick={() => data.imovirtual && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
                                 {data.imovirtual && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
@@ -281,14 +318,14 @@ const Imovel = ({ params, signedIn }) => {
                 <DialogTitle id="alert-dialog-slide-title">Tens a certeza que queres publicar?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Se clicares "Sim", o imovel ficará publico no {open === 'wp' ? ' Website da Relive' : ' Imovirtual'}.
+                        Se clicares "Sim", o imovel ficará publico no {open === 'wp' ? ' Website da Relive' : open === 'imoPut' ? ' Imovirtual e com informação tualizada do website' : ' Imovirtual'}.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Não
                     </Button>
-                    <Button onClick={open === 'wp' ? handlePublish : postImo} color="primary">
+                    <Button onClick={open === 'wp' ? handlePublish : open === 'imoPut' ? putImo : postImo} color="primary">
                         Sim
                     </Button>
                 </DialogActions>
