@@ -57,19 +57,19 @@ any error
 const advertCode = (code) => {
     switch (code) {
         case 'active':
-            return <span style={{ color: 'green' }}>Anúncio criado e publicado!</span>
+            return <span style={{ color: 'green' }}>Anúncio público</span>
         case 'unpaid':
-            return <span style={{ color: 'crimson', fontWeight: 500 }}>Anúncio não criado, falta de slots ou Package</span>
+            return <span style={{ color: 'crimson', fontWeight: 500 }}>Anúncio não público, falta de slots ou Package</span>
         case 'removed_by_user':
             return <span style={{ color: 'blue' }}>Anúncio removido por utilizador</span>
         case 'outdated_by_package':
-            return <span style={{ color: 'crimson', fontWeight: 500 }}>Package expirado, será publicado automaticamente ao activar Imovirtual</span>
+            return <span style={{ color: 'crimson', fontWeight: 500 }}>Package expirado, será publicado automaticamente ao ativar Imovirtual</span>
         case undefined:
             return <span style={{ color: 'crimson' }}>Erro</span>
         default: /* moderated
         removed_by_moderator
         outdated */
-            return <span style={{ color: 'blue' }}>{'Anuncio sofreu moderação ' + code + ': não está Público'}</span>
+            return <span style={{ color: 'blue' }}>{'Anuncio sofreu alteração ' + code + ': não está Público'}</span>
     }
 }
 
@@ -221,9 +221,8 @@ const Profile = (props) => {
                                     <StyledTableCell align="left">{row.event_type}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data ? advertCode(row.data.code) : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.website_id ? <Button color="primary" href={`/imovel/${row.website_id}`}>RE-{row.website_id}</Button> : null}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.data && row.data.validation ? row.data.validation[0].detail : null}</StyledTableCell>
-                                    {/* ///////////////////////// */}
-                                    <StyledTableCell align="left">{row.data ? (row.data.recorded_at ? moment(row.data.recorded_at).format('lll') : moment.unix(parseInt(row.timestamp)/1000).format("lll")) : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data && row.data.validation ? row.data.validation[0].detail : (row.data && row.data.moderation ? row.data.moderation.reason : null)}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data ? (row.data.recorded_at ? moment(row.data.recorded_at).format('lll') : moment.unix(parseInt(row.timestamp) / 1000).format("lll")) : null}</StyledTableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
