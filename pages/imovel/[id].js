@@ -14,14 +14,14 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Error from "../_error";
+/* import Error from "../_error"; */
 import Loading from "../../components/Loading"
 
 /* import { auth } from '../../utils/auth' */
 
 
 
-const data2 = [
+/* const data2 = [
     {
         "date": "2019-02-15",
         "messages_count": 2,
@@ -34,7 +34,7 @@ const data2 = [
         "page_views": 3,
         "phone_views": 1
     }
-];
+]; */
 
 
 /* SEE imoCode ||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
