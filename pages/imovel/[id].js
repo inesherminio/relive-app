@@ -46,6 +46,7 @@ const Imovel = ({ params, signedIn }) => {
     const [loading, setLoading] = useState(true);
     const [info, setInfo] = useState('');
     const [status, setStatus] = useState(null);
+    const [statusImo, setStatusImo] = useState(null);
 
     const postImo = () => {
         setLoading(true)
@@ -57,6 +58,7 @@ const Imovel = ({ params, signedIn }) => {
                     .then(res => {
                         setLoading(false)
                         setPublish(false)
+                        setStatusImo('Publicação pendente')
                         handleClose()
                     })
                     .catch(err => {
@@ -84,6 +86,7 @@ const Imovel = ({ params, signedIn }) => {
                     .then(res => {
                         setLoading(false)
                         setPublish(false)
+                        setStatusImo('Atualização pendente')
                         handleClose()
                     })
                     .catch(err => {
@@ -141,18 +144,21 @@ const Imovel = ({ params, signedIn }) => {
                                 .then(res3 => {
                                     setLoading(false)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: res3.data.data })
+                                    setStatusImo(res2.data.data.state.code)
                                     setStatus(res.data.status)
                                 })
                                 .catch(err => {
                                     setLoading(false)
                                     setStatus(res.data.status)
+                                    setStatusImo(res2.data.data.state.code)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
                                     console.log(err)
                                 })
                         })
                         .catch(err => {
-                            setData({ ...res.data, imovirtual: { state: { code: 'Error' } }, statistics: null })
+                            setData({ ...res.data, statistics: null })
                             setStatus(res.data.status)
+                            setStatusImo('Error')
                             setLoading(false)
                             console.log(err)
                         })
@@ -226,7 +232,7 @@ const Imovel = ({ params, signedIn }) => {
 
     const isWebsitePending = status === "pending" || status === "draft"
 
-    const ImoStatusCode = data.imovirtual && data.imovirtual.state ? data.imovirtual.state.code : 'Error'
+    const ImoStatusCode = statusImo || 'Not published'
 
 
     if (loading)
@@ -247,7 +253,7 @@ const Imovel = ({ params, signedIn }) => {
                     <>
                         <h2>{data.title.rendered}</h2>
                         <h3>Estado Website: <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span></h3>
-                        <h3>Estado Imovirtual: <span style={{ color: data.imovirtual && ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{data.imovirtual ? ImoStatusCode : 'Not published'}</span></h3>
+                        <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
 
                         {data.statistics &&
                             <>
@@ -280,24 +286,24 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color={isWebsitePending ? "primary" : "secondary"} onClick={() => isWebsitePending ? handleClickOpen('wp') : handlePending()}>
                                 {isWebsitePending ? "Publicar no Website" : "Guardar como 'Revisão Pendente'"}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={!data.imovirtual} onClick={() => validateImo()}>
+                            <Button variant="contained" color="primary" disabled={!statusImo} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
 
                             {ImoStatusCode === 'active' ?
-                                <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode !== 'active'))} onClick={() => handleClickOpen('imoPut')}>
+                                <Button variant="contained" color="primary" disabled={!publish || (statusImo && (ImoStatusCode !== 'active'))} onClick={() => handleClickOpen('imoPut')}>
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
-                                <Button variant="contained" color="primary" disabled={!publish || (data.imovirtual && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
+                                <Button variant="contained" color="primary" disabled={!publish || (statusImo && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
 
 
-                            <Button variant="contained" color="primary" disabled={(data.imovirtual && !ImoStatusCode) || !data.imovirtual || ImoStatusCode === 'Error'} onClick={() => data.imovirtual && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
-                                {data.imovirtual && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
+                            <Button variant="contained" color="primary" disabled={(statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} onClick={() => statusImo && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
+                                {statusImo && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
                         <p style={{ color: 'red', fontWeight: 500, textAlign: 'center' }}>
