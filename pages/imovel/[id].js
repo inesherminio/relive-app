@@ -37,9 +37,51 @@ import Loading from "../../components/Loading"
 ]; */
 
 
-/* SEE imoCode ||||||||||||||||||||||||||||||||||||||||||||||||||||||||| */
+/* STATUS CODES OF ADVERTS:
+
+| pending         after POST
+| pending_update  after PUT
+| pending_activate           // SE CONTER pending BLOQUEAR ALL ACTIONS
+| pending_deactivate
+| pending_delete  after DELETE
 
 
+
+| active // can PUT DELETE DEACTIVATE
+
+| unpaid // can only POST (I think, this happens if we try to create when imovirtual is not paid)
+
+| removed_by_user // can POST or ACTIVATE (depending on the last operation)
+
+
+| outdated_by_package // Can PUT and DELETE
+
+
+| moderated //
+| removed_by_moderator     // No operations allowed in these 3 states
+| outdated // 
+
+any error (could be empty)   // Depends on error, could be POST if error on creating
+
+*/
+
+const isAvailable = (imoStatus, action) => { /* action can be post, put, delete, activate, deactivate */
+    if(!imoStatus && action === 'post') /* Property is not on Imovirtual */
+        return true
+    switch (imoStatus) {
+        case 'active':
+            return !(action === 'post' || action === 'activate')
+        case 'unpaid':
+            return action === 'post'
+        case 'removed_by_user':
+            return action === 'post' || action === 'activate'
+        case 'outdated_by_package':
+            return action === 'put' || action === 'delete'
+        default: /* moderated, removed_by_moderator, outdated, all pendings, any other error */
+            return false
+    }
+
+}
 
 
 const Imovel = ({ params, signedIn }) => {
@@ -297,6 +339,8 @@ const Imovel = ({ params, signedIn }) => {
     const ImoStatusCode = statusImo || 'Not published'
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
+    const isImoActive = statusImo && ImoStatusCode === 'active'
+
     if (loading)
         return <Loading message={loading} />;
 
@@ -353,19 +397,19 @@ const Imovel = ({ params, signedIn }) => {
                             </Button>
                             {/* PUBLICAR TEM DE SER TAMBÉM ACTUALIZAR */}
 
-                            {ImoStatusCode === 'active' ?
-                                <Button variant="contained" color="primary" disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} onClick={() => handleClickOpen('imoPut')}>
+                            {isAvailable(statusImo, 'post') ?
+                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'post')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} */ onClick={() => handleClickOpen('imoPut')}>
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
-                                <Button variant="contained" color="primary" disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} onClick={() => handleClickOpen('imo')}>
+                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'put')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
 
 
-                            <Button variant="contained" color="primary" disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} onClick={() => statusImo && ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
-                                {statusImo && ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
+                            <Button variant="contained" color="primary" disabled={isImoActive ? !isAvailable(statusImo, 'deactivate') : !isAvailable(statusImo, 'activate')} /* disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} */ onClick={() => isImoActive ? deactivateAdvert() : activateAdvert()}>
+                                {isImoActive ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                         </Grid>
                         <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
