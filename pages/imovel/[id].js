@@ -422,7 +422,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <h2>Editar Imovirtual</h2>
                         <Grid container justify="flex-end" className="action-container">
-                            <Button variant="contained" color="primary" disabled={!statusImo || statusImo === 'Error Authentication'} onClick={() => validateImo()}>
+                            <Button variant="contained" color="primary" disabled={statusImo === 'Error Authentication'} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
                             {isAvailable(statusImo, 'put') ?
@@ -430,7 +430,7 @@ const Imovel = ({ params, signedIn }) => {
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
-                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'post')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
+                                <Button variant="contained" color="primary" disabled={!publish || !isAvailable(statusImo, 'post')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
