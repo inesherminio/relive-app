@@ -210,7 +210,7 @@ const Imovel = ({ params, signedIn }) => {
                         console.log(err)
                         setInfo({
                             error: true,
-                            msg: 'ERROR Validating Property'
+                            msg: 'ERROR Validating Property: ' + err.response.data.error
                         })
                     })
             })
