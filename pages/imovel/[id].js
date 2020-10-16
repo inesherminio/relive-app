@@ -285,6 +285,11 @@ const Imovel = ({ params, signedIn }) => {
                             setData({ ...res.data, statistics: null })
                             setStatus(res.data.status)
                             setStatusImo('Error')
+                            if (err.response.status === 403)
+                                setInfo({
+                                    error: true,
+                                    msg: 'Erro Autenticação Imovirtual. Para voltar a activar a app vai ao menu "Profile".'
+                                })
                             setLoading(false)
                             console.log(err)
                         })
