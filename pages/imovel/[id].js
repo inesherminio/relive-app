@@ -426,7 +426,7 @@ const Imovel = ({ params, signedIn }) => {
                                 Validar Imovirtual
                             </Button>
                             {isAvailable(statusImo, 'put') ?
-                                <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'put')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} */ onClick={() => handleClickOpen('imoPut')}>
+                                <Button variant="contained" color="primary" disabled={!publish || !isAvailable(statusImo, 'put')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode !== 'active'))} */ onClick={() => handleClickOpen('imoPut')}>
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
