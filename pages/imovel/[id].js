@@ -284,12 +284,14 @@ const Imovel = ({ params, signedIn }) => {
                         .catch(err => {
                             setData({ ...res.data, statistics: null })
                             setStatus(res.data.status)
-                            setStatusImo('Error')
-                            if (err.response.status === 403)
+                            if (err.response.status === 403) {
+                                setStatusImo('Error Authentication')
                                 setInfo({
                                     error: true,
                                     msg: 'Erro Autenticação Imovirtual. Para voltar a activar a app vai ao menu "Profile".'
                                 })
+                            } else
+                                setStatusImo('Error')
                             setLoading(false)
                             console.log(err)
                         })
@@ -420,7 +422,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <h2>Editar Imovirtual</h2>
                         <Grid container justify="flex-end" className="action-container">
-                            <Button variant="contained" color="primary" disabled={!statusImo} onClick={() => validateImo()}>
+                            <Button variant="contained" color="primary" disabled={!statusImo || statusImo === 'Error Authentication'} onClick={() => validateImo()}>
                                 Validar Imovirtual
                             </Button>
                             {isAvailable(statusImo, 'put') ?
