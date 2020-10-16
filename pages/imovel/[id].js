@@ -97,7 +97,7 @@ const Imovel = ({ params, signedIn }) => {
     const [statusImo, setStatusImo] = useState(null);
 
     const postImo = () => {
-        setLoading("A enviar pedido de publicação ao Imovirtual")
+        setLoading("A enviar pedido de publicação a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
                 axios.post(`/imovirtual/advert/${params.id}`, {
@@ -135,7 +135,7 @@ const Imovel = ({ params, signedIn }) => {
     }
 
     const putImo = () => {
-        setLoading("A enviar pedido de atualização ao Imovirtual")
+        setLoading("A enviar pedido de atualização a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
                 axios.put(`/imovirtual/advert/${data.imovirtual.uuid}`, {
@@ -172,8 +172,25 @@ const Imovel = ({ params, signedIn }) => {
             })
     }
 
+    const deleteImo = () => {
+        setLoading("A enviar pedido de eliminação a Imovirtual")
+        axios.delete(`/imovirtual/advert/${data.imovirtual.uuid}`)
+            .then(res => {
+                console.log(res)
+                setStatusImo('Eliminação pendente')
+                setInfo({
+                    error: false,
+                    msg: 'Pedido de eliminação enviado'
+                })
+            })
+            .catch(err => setInfo({
+                error: true,
+                msg: 'Ocorreu algum erro'
+            }))
+    }
+
     const validateImo = () => {
-        setLoading("A enviar pedido de validação ao Imovirtual")
+        setLoading("A enviar pedido de validação a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
                 axios.post(`/imovirtual/advert/validate`, {
@@ -331,6 +348,10 @@ const Imovel = ({ params, signedIn }) => {
             }))
     }
 
+    const deleteAdvert = () => {
+        setOpen('delete');
+    }
+
     const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
 
 
@@ -409,6 +430,9 @@ const Imovel = ({ params, signedIn }) => {
                             <Button variant="contained" color="primary" disabled={isImoActive ? !isAvailable(statusImo, 'deactivate') : !isAvailable(statusImo, 'activate')} /* disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} */ onClick={() => isImoActive ? deactivateAdvert() : activateAdvert()}>
                                 {isImoActive ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
+                            <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'delete')} onClick={() => deleteAdvert()}>
+                                Eliminar do Imovirtual
+                            </Button>
                         </Grid>
                         <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
                             {info.msg}
@@ -428,14 +452,14 @@ const Imovel = ({ params, signedIn }) => {
                 <DialogTitle id="alert-dialog-slide-title">Tens a certeza que queres publicar?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Se clicares "Sim", o imovel ficará publico no {open === 'wp' ? ' Website da Relive' : open === 'imoPut' ? ' Imovirtual e com informação atualizada do website' : ' Imovirtual'}.
+                        Se clicares "Sim", o imovel ficará {open === 'delete' ? ' eliminado' : ' público'} no {open === 'wp' ? ' Website da Relive' : open === 'imoPut' ? ' Imovirtual e com informação atualizada do website' : ' Imovirtual'}.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
                         Não
                     </Button>
-                    <Button onClick={open === 'wp' ? handlePublish : open === 'imoPut' ? putImo : postImo} color="primary">
+                    <Button onClick={open === 'wp' ? handlePublish : open === 'imoPut' ? putImo : open === 'delete' ? deleteImo : postImo} color="primary">
                         Sim
                     </Button>
                 </DialogActions>
