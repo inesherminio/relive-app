@@ -287,6 +287,7 @@ const Imovel = ({ params, signedIn }) => {
                                     setLoading(false)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: res3.data.data })
                                     setStatusImo(res2.data.imoCode) /* data.state.code */
+                                    setStatusImoPrevious(res2.data.prevImoCode)
                                     setStatus(res.data.status)
                                 })
                                 .catch(err => {
