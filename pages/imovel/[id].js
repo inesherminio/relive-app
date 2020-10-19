@@ -200,6 +200,7 @@ const Imovel = ({ params, signedIn }) => {
                 console.log(res)
                 setStatusImo('Eliminação pendente')
                 setLoading(false)
+                handleClose()
                 setInfo({
                     error: false,
                     msg: 'Pedido de eliminação enviado'
@@ -207,6 +208,7 @@ const Imovel = ({ params, signedIn }) => {
             })
             .catch(err => {
                 setLoading(false)
+                handleClose()
                 setInfo({
                     error: true,
                     msg: 'Ocorreu algum erro'
