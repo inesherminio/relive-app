@@ -65,6 +65,17 @@ any error (could be empty)   // Depends on error, could be POST if error on crea
 
 */
 
+
+/* 
+
+
+    imovel-tipo: 95, 47, 49, 129, 154 Apartamento| 34 Moradia| 71, 87, 91 Comercial
+
+    imovel-estado: 78 Venda | 77 Arrendamento | 174 Arrendado | 175 Vendido
+
+
+*/
+
 const isAvailable = (imoStatus, action) => { /* action can be post, put, delete, activate, deactivate */
     if (!imoStatus && action === 'post') /* Property is not on Imovirtual */
         return true
@@ -367,7 +378,8 @@ const Imovel = ({ params, signedIn }) => {
     const ImoStatusCode = statusImo || 'Not published'
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
-    const isImoActive = statusImo && ImoStatusCode === 'active'
+    const objectiveStatus = data && data['imovel-estado'] ? (data['imovel-estado'] === '77' ? 'Arrenddamento' : data['imovel-estado'] === '78' ? 'A vender' : data['imovel-estado'] === '174' ? 'Arrendado' : 'Vendido') : null
+    const type = data && data['imovel-tipo'] ? data['imovel-tipo'] === 34 ? 'Moradia' : 'Apartamento' : null
 
     if (loading)
         return <Loading message={loading} />;
@@ -386,7 +398,11 @@ const Imovel = ({ params, signedIn }) => {
                 {data.title ?
                     <>
                         <h2>{data.title.rendered}</h2>
-                        <h3>Estado Website: <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span></h3>
+                        <h3>Estado Website: 
+                            <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span>
+                            <span style={{ color: '#82ca9d' }}>{objectiveStatus}</span>
+                            <span style={{ color: '#82ca9d' }}>{type}</span>
+                        </h3>
                         <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
 
                         {data.statistics &&
