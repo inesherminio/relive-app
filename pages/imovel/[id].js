@@ -481,7 +481,7 @@ const Imovel = ({ params, signedIn }) => {
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle id="alert-dialog-slide-title">Tens a certeza que queres publicar?</DialogTitle>
+                <DialogTitle id="alert-dialog-slide-title">Tens a certeza que queres {open === 'delete' ? ' eliminar' : open === 'imoPut' ? ' atualizar' : ' publicar'}?</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         Se clicares "Sim", o imovel ficará {open === 'delete' ? ' eliminado' : ' público'} no {open === 'wp' ? ' Website da Relive' : open === 'imoPut' ? ' Imovirtual e com informação atualizada do website' : ' Imovirtual'}.
