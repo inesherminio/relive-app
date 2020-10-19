@@ -218,7 +218,7 @@ const Profile = (props) => {
                                         {row.provider}
                                     </StyledTableCell>
                                     <StyledTableCell align="left">{row.flow}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.event_type}</StyledTableCell>
+                                    <StyledTableCell align="left"><span style={{ color: row.event_type.includes('error') ? "red" : "inherit" }}>{row.event_type}</span></StyledTableCell>
                                     <StyledTableCell align="left">{row.data && row.data.code ? advertCode(row.data.code) : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.website_id ? <Button color="primary" href={`/imovel/${row.website_id}`}>RE-{row.website_id}</Button> : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data && row.data.validation ? row.data.validation[0].detail : (row.data && row.data.moderation ? row.data.moderation.reason : row.data && row.data.id ? <Button color="primary" target="_blank" href={`https://www.imovirtual.com/contapessoal/responder/${row.data.id}`}>{row.data.sender_email}</Button> : null)}</StyledTableCell>
