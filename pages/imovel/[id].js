@@ -450,8 +450,8 @@ const Imovel = ({ params, signedIn }) => {
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
-                            <Button variant="contained" color="primary" disabled={isImoActive ? !isAvailable(statusImo, 'deactivate') : !isAvailable(statusImo, 'activate')} /* disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} */ onClick={() => isImoActive ? deactivateAdvert() : activateAdvert()}>
-                                {isImoActive ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
+                            <Button variant="contained" color="primary" disabled={ImoStatusCode === 'active' ? !isAvailable(statusImo, 'deactivate') : !isAvailable(statusImo, 'activate')} /* disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} */ onClick={() => ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
+                                {ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                             <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'delete')} onClick={() => deleteAdvert()}>
                                 Eliminar do Imovirtual
