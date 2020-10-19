@@ -378,7 +378,7 @@ const Imovel = ({ params, signedIn }) => {
     const ImoStatusCode = statusImo || 'Not published'
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
-    const objectiveStatus = data && data['imovel-estado'] ? (data['imovel-estado'] === '77' ? 'Arrenddamento' : data['imovel-estado'] === '78' ? 'A vender' : data['imovel-estado'] === '174' ? 'Arrendado' : 'Vendido') : null
+    const objectiveStatus = data && data['imovel-estado'] ? (data['imovel-estado'] === '77' ? 'Arrendamento' : data['imovel-estado'] === '78' ? 'A vender' : data['imovel-estado'] === '174' ? 'Arrendado' : data['imovel-estado'] === '175' ? 'Vendido' : null) : null
     const type = data && data['imovel-tipo'] ? data['imovel-tipo'] === 34 ? 'Moradia' : 'Apartamento' : null
 
     if (loading)
@@ -411,7 +411,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item>
-                            <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
+                                <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
                             </Grid>
                         </Grid>
 
