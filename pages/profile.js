@@ -219,7 +219,7 @@ const Profile = (props) => {
                                     </StyledTableCell>
                                     <StyledTableCell align="left">{row.flow}</StyledTableCell>
                                     <StyledTableCell align="left">{row.event_type}</StyledTableCell>
-                                    <StyledTableCell align="left">{row.data ? advertCode(row.data.code) : null}</StyledTableCell>
+                                    <StyledTableCell align="left">{row.data && row.data.code ? advertCode(row.data.code) : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.website_id ? <Button color="primary" href={`/imovel/${row.website_id}`}>RE-{row.website_id}</Button> : null}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data && row.data.validation ? row.data.validation[0].detail : (row.data && row.data.moderation ? row.data.moderation.reason : row.data && row.data.id ? <Button color="primary" target="_blank" href={`https://www.imovirtual.com/contapessoal/responder/${row.data.id}`}>{row.data.sender_email}</Button> : null)}</StyledTableCell>
                                     <StyledTableCell align="left">{row.data ? (row.data.recorded_at ? moment(row.data.recorded_at).format('lll') : moment.unix(parseInt(row.timestamp) / 1000).format("lll")) : null}</StyledTableCell>
