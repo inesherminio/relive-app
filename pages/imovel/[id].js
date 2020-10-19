@@ -76,7 +76,7 @@ any error (could be empty)   // Depends on error, could be POST if error on crea
 
 */
 
-const isAvailable = (imoStatus, action) => { /* action can be post, put, delete, activate, deactivate */
+const isAvailable = (imoStatus, action, ImoPrevious = null) => { /* action can be post, put, delete, activate, deactivate */
     if (!imoStatus && action === 'post') /* Property is not on Imovirtual */
         return true
     switch (imoStatus) {
@@ -106,6 +106,7 @@ const Imovel = ({ params, signedIn }) => {
     });
     const [status, setStatus] = useState(null);
     const [statusImo, setStatusImo] = useState(null);
+    const [statusImoPrevious, setStatusImoPrevious] = useState(null);
 
     const postImo = () => {
         setLoading("A enviar pedido de publicação a Imovirtual")
@@ -292,6 +293,7 @@ const Imovel = ({ params, signedIn }) => {
                                     setLoading(false)
                                     setStatus(res.data.status)
                                     setStatusImo(res2.data.imoCode) /* data.state.code */
+                                    setStatusImoPrevious(res2.data.prevImoCode)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
                                     console.log(err)
                                 })
@@ -384,6 +386,8 @@ const Imovel = ({ params, signedIn }) => {
 
     const objectiveStatus = data && data['imovel-estado'] && data['imovel-estado'].length ? data['imovel-estado'][0] === 77 ? 'A arrendar' : data['imovel-estado'][0] === 78 ? 'A vender' : data['imovel-estado'][0] === 174 ? 'Arrendado' : data['imovel-estado'][0] === 175 ? 'Vendido' : null : null
     const type = data && data['imovel-tipo'] && data['imovel-tipo'].length ? data['imovel-tipo'][0] === 34 ? 'Moradia' : 'Apartamento' : null
+
+    console.log('Previous Imo', statusImoPrevious)
 
     if (loading)
         return <Loading message={loading} />;
