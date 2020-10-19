@@ -398,12 +398,22 @@ const Imovel = ({ params, signedIn }) => {
                 {data.title ?
                     <>
                         <h2>{data.title.rendered}</h2>
-                        <h3>Estado Website: 
-                            <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span>
-                            <span style={{ color: '#82ca9d' }}>{objectiveStatus}</span>
-                            <span style={{ color: '#82ca9d' }}>{type}</span>
-                        </h3>
-                        <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
+                        <Grid container justify="flex-start">
+                            <Grid item>
+                                <h3>Estado Website: <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span></h3>
+                            </Grid>
+                            <Grid item>
+                                <h3><span style={{ color: '#82ca9d' }}>{type}</span></h3>
+                            </Grid>
+                            <Grid item>
+                                <h3><span style={{ color: '#82ca9d' }}>{objectiveStatus}</span></h3>
+                            </Grid>
+                        </Grid>
+                        <Grid container justify="flex-start">
+                            <Grid item>
+                            <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
+                            </Grid>
+                        </Grid>
 
                         {data.statistics &&
                             <>
