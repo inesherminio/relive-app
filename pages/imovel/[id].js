@@ -403,10 +403,10 @@ const Imovel = ({ params, signedIn }) => {
                                 <h3>Estado Website: <span style={{ color: displayStatus === 'Publico' ? '#82ca9d' : 'red' }}>{displayStatus}</span></h3>
                             </Grid>
                             <Grid item xs={3}>
-                                <h3><span style={{ color: '#82ca9d' }}>{type}</span></h3>
+                                <h3>Tipo: <span style={{ color: '#82ca9d' }}>{type}</span></h3>
                             </Grid>
                             <Grid item xs={3}>
-                                <h3><span style={{ color: '#82ca9d' }}>{objectiveStatus}</span></h3>
+                                <h3>Objectivo: <span style={{ color: '#82ca9d' }}>{objectiveStatus}</span></h3>
                             </Grid>
                         </Grid>
                         <Grid container justify="flex-start">
