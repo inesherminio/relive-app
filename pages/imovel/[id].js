@@ -189,15 +189,19 @@ const Imovel = ({ params, signedIn }) => {
             .then(res => {
                 console.log(res)
                 setStatusImo('Eliminação pendente')
+                setLoading(false)
                 setInfo({
                     error: false,
                     msg: 'Pedido de eliminação enviado'
                 })
             })
-            .catch(err => setInfo({
-                error: true,
-                msg: 'Ocorreu algum erro'
-            }))
+            .catch(err => {
+                setLoading(false)
+                setInfo({
+                    error: true,
+                    msg: 'Ocorreu algum erro'
+                })
+            })
     }
 
     const validateImo = () => {
