@@ -77,6 +77,15 @@ any error (could be empty)   // Depends on error, could be POST if error on crea
 */
 
 const isAvailable = (imoStatus, action, ImoPrevious = null) => { /* action can be post, put, delete, activate, deactivate */
+
+    /* User deleted */
+    if (imoStatus === 'removed_by_user' && ImoPrevious === 'pending_delete')
+        return action === 'post'
+
+    /* User deactivated */
+    if (imoStatus === 'removed_by_user' && ImoPrevious === 'pending_deactivate')
+        return action === 'activate'
+
     if (!imoStatus && action === 'post') /* Property is not on Imovirtual */
         return true
     switch (imoStatus) {
@@ -419,7 +428,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
-                                <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode}</span></h3>
+                                <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode === 'removed_by_user' ? statusImoPrevious === 'pending_deactivate' ? 'Desativado' : statusImoPrevious === 'pending_delete' ? 'Eliminado' : ImoStatusCode : ImoStatusCode}</span></h3>
                             </Grid>
                         </Grid>
 
@@ -464,11 +473,11 @@ const Imovel = ({ params, signedIn }) => {
                                     {"Atualizar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                                 :
-                                <Button variant="contained" color="primary" disabled={!publish || !isAvailable(statusImo, 'post')} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
+                                <Button variant="contained" color="primary" disabled={!publish || !isAvailable(statusImo, 'post', statusImoPrevious)} /* disabled={isImoPending || !publish || (statusImo && (ImoStatusCode === 'active'))} */ onClick={() => handleClickOpen('imo')}>
                                     {"Publicar Imovirtual" + (publish ? '' : ' (Valida primeiro)')}
                                 </Button>
                             }
-                            <Button variant="contained" color="primary" disabled={ImoStatusCode === 'active' ? !isAvailable(statusImo, 'deactivate') : !isAvailable(statusImo, 'activate')} /* disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} */ onClick={() => ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
+                            <Button variant="contained" color="primary" disabled={ImoStatusCode === 'active' ? !isAvailable(statusImo, 'deactivate') : !isAvailable(statusImo, 'activate', statusImoPrevious)} /* disabled={isImoPending || (statusImo && !ImoStatusCode) || !statusImo || ImoStatusCode === 'Error'} */ onClick={() => ImoStatusCode === 'active' ? deactivateAdvert() : activateAdvert()}>
                                 {ImoStatusCode === 'active' ? 'Desativar Imovirtual' : 'Ativar Imovirtual'}
                             </Button>
                             <Button variant="contained" color="primary" disabled={!isAvailable(statusImo, 'delete')} onClick={() => deleteAdvert()}>
