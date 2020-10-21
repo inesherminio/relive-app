@@ -434,7 +434,7 @@ const Imovel = ({ params, signedIn }) => {
                             </Grid>
                             {data.imovirtual && data.imovirtual.state &&
                                 <Grid item xs={3}>
-                                    <Button variant="contained" color="primary" target="_blank" href={data.imovirtual.state.url}>Página</Button>
+                                    <Button variant="contained" color="primary" target="_blank" href={data.imovirtual.state.url}>Ver página</Button>
                                 </Grid>
                             }
                         </Grid>
