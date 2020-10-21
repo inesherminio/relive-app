@@ -432,6 +432,11 @@ const Imovel = ({ params, signedIn }) => {
                             <Grid item xs={4}>
                                 <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode === 'removed_by_user' ? statusImoPrevious === 'pending_deactivate' ? 'Desativado' : statusImoPrevious === 'pending_delete' ? 'Eliminado' : ImoStatusCode : ImoStatusCode}</span></h3>
                             </Grid>
+                            {data.imovirtual && data.imovirtual.state &&
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" target="_blank" href={data.imovirtual.state.url}>Página</Button>
+                                </Grid>
+                            }
                         </Grid>
 
                         {data.statistics &&
@@ -520,73 +525,73 @@ const Imovel = ({ params, signedIn }) => {
     )
 };
 
-/* Imovel.getInitialProps = async ({ query }) => {
-    let data = []
+/* Imovel.getInitialProps = async ({query}) => {
+                let data = []
     try {
         const res = await axios.get(`/wp/v2/imoveis/${query.id}?_embed)`)
-        data = res.data;
+            data = res.data;
     } catch (err) {
-        console.log("ERROR", err.message);
-    }
+                console.log("ERROR", err.message);
+        }
     return {
-        data
-    };
-}; */
+                data
+            };
+        }; */
 
 // This also gets called at build time
 /* export async function getStaticProps(ctx) {
-    const { params } = ctx
-    const token = auth(ctx)
-    let data = []
+    const {params} = ctx
+            const token = auth(ctx)
+            let data = []
     try {
         const res = await axios.get(`/wp/v2/imoveis/${params.id}?_embed)`)
-        data = res.data;
+            data = res.data;
     } catch (err) {
-        console.log("ERROR", err.message);
-    }
-
-    // Next.js will attempt to re-generate the page:
-    // - When a request comes in
-    // - At most once every 60 seconds
-    return { props: { data }, revalidate: 60 }
-}
-
-// This function gets called at build time
+                console.log("ERROR", err.message);
+        }
+    
+        // Next.js will attempt to re-generate the page:
+        // - When a request comes in
+        // - At most once every 60 seconds
+    return {props: {data}, revalidate: 60 }
+        }
+        
+        // This function gets called at build time
 export async function getStaticPaths() {
-    let paths = []
-
+                let paths = []
+        
     try {
-        axios.defaults.baseURL = 'https://relive.pt/wp-json'
-        await axios.post('/jwt-auth/v1/token', { username: 'sergioferras97', password: process.env.PASS })
+                axios.defaults.baseURL = 'https://relive.pt/wp-json'
+        await axios.post('/jwt-auth/v1/token', {username: 'sergioferras97', password: process.env.PASS })
             .then(res => {
                 axios.defaults.headers.common = { 'Authorization': `Bearer ${res.data.token}` }
             })
             .catch(e => console.log("WTF", e))
         const res = await axios.get('/wp/v2/imoveis?_embed&per_page=100&status=pending,publish,draft')
         paths = res.data.map((post) => ({
-            params: { id: post.id.toString() },
+                params: {id: post.id.toString() },
         }))
     } catch (err) {
-        console.log("ERROR", err.message);
-    }
+                console.log("ERROR", err.message);
+        }
     return {
-        paths,
-        fallback: false
-    }
-} */
+                paths,
+                fallback: false
+        }
+    } */
 
 export async function getServerSideProps(ctx) {
     const { params } = ctx
     /* const token = auth(ctx)
-    const { params } = ctx
+const {params} = ctx
     let data = []
-    try {
-        const res = await axios.get(`/wp/v2/imoveis/${params.id}?_embed)`)
-        data = res.data;
-    } catch (err) {
+try {
+const res = await axios.get(`/wp/v2/imoveis/${params.id}?_embed)`)
+    data = res.data;
+} catch (err) {
         console.log("ERROR", err.message);
-    }
- */
+}
+*/
     return { props: { params } }
 }
 
