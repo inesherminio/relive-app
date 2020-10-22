@@ -454,6 +454,9 @@ const Imovel = ({ params, signedIn }) => {
                             <Grid item xs={3}>
                                 <h3>Objectivo: <span style={{ color: '#82ca9d' }}>{objectiveStatus}</span></h3>
                             </Grid>
+                            <Grid item xs={2}>
+                                <Button variant="contained" color="primary" target="_blank" href={data.link}>Ver página</Button>
+                            </Grid>
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
