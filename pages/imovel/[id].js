@@ -257,7 +257,7 @@ const Imovel = ({ params, signedIn }) => {
                         setPublish(true)
                         setInfo({
                             error: true,
-                            msg: res2.data.message
+                            msg: res2.data.message || 'Validado com sucesso!'
                         })
                     })
                     .catch(err => {
