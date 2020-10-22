@@ -147,8 +147,9 @@ const Imovel = ({ params, signedIn }) => {
         setLoading("A enviar pedido de publicação a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
+                const sendData = preSendData(res.data)
                 axios.post(`/imovirtual/advert/${params.id}`, {
-                    data: res.data
+                    data: sendData
                 })
                     .then(res => {
                         setLoading(false)
@@ -185,8 +186,9 @@ const Imovel = ({ params, signedIn }) => {
         setLoading("A enviar pedido de atualização a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
+                const sendData = preSendData(res.data)
                 axios.put(`/imovirtual/advert/${data.imovirtual.uuid}`, {
-                    data: res.data
+                    data: sendData
                 })
                     .then(res => {
                         setLoading(false)
