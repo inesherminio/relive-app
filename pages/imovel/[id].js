@@ -103,6 +103,32 @@ const isAvailable = (imoStatus, action, ImoPrevious = null) => { /* action can b
 
 }
 
+const preSendData = (data) => {
+
+    const { content, id, link, property_meta, status, title, type } = data
+
+    const { REAL_HOMES_property_images } = property_meta
+
+    const property_images = REAL_HOMES_property_images.map(img => img.full_url)
+
+    return {
+        id,
+        link,
+        status,
+        type,
+        title,
+        content,
+        "imovel-caracteristicas": data["imovel-caracteristicas"],
+        "imovel-estado": data["imovel-estado"],
+        "imovel-tipo": data["imovel-tipo"],
+        "localizacao-imovel": data["localizacao-imovel"],
+        property_meta: {
+            ...property_meta,
+            REAL_HOMES_property_images: property_images
+        }
+    }
+}
+
 
 const Imovel = ({ params, signedIn }) => {
     const [data, setData] = useState([]);
@@ -220,8 +246,9 @@ const Imovel = ({ params, signedIn }) => {
         setLoading("A enviar pedido de validação a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
+                const sendData = preSendData(res.data)
                 axios.post(`/imovirtual/advert/validate`, {
-                    data: res.data
+                    data: sendData
                 })
                     .then(res2 => {
                         setLoading(false)
