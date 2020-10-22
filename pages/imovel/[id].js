@@ -109,7 +109,7 @@ const preSendData = (data) => {
 
     const { REAL_HOMES_property_images } = property_meta
 
-    const property_images = REAL_HOMES_property_images.map(img => img.full_url)
+    const property_images = REAL_HOMES_property_images.map(img => { return { full_url: img.full_url } })
 
     return {
         id,
