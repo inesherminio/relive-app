@@ -111,13 +111,24 @@ const preSendData = (data) => {
 
     const property_images = REAL_HOMES_property_images.map(img => { return { full_url: img.full_url } })
 
+
+    /* Remove HTML from content */
+    const contentNoHTML = document.createElement("DIV");
+    contentNoHTML.innerHTML = content.rendered
+
+    /*     function stripHtml(html) {
+            var tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        } */
+
     return {
         id,
         link,
         status,
         type,
         title,
-        content,
+        content: { rendered: contentNoHTML.textContent || contentNoHTML.innerText || "" },
         "imovel-caracteristicas": data["imovel-caracteristicas"],
         "imovel-estado": data["imovel-estado"],
         "imovel-tipo": data["imovel-tipo"],
