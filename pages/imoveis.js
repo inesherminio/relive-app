@@ -124,7 +124,7 @@ const Imoveis = (props) => {
                             newData.push({
                                 ...d,
                                 inImovirtual: auxFind,
-                                
+
                             })
                         })
                         console.log(newData)
@@ -185,6 +185,13 @@ const Imoveis = (props) => {
                                             {/* <ListItemText className="lista-text" id={b.id} primary={b.title.rendered} /> */}
                                             <h2 className="lista-text">{b.title.rendered}</h2>
                                             <ListItemSecondaryAction>
+                                                {(b["imovel-estado"].includes(174) || b["imovel-estado"].includes(175)) && /* Vendido ou Arrendado */
+                                                    <Chip
+                                                        color="primary"
+                                                        icon={<CheckCircleIcon />}
+                                                        label="Vendido"
+                                                    />
+                                                }
                                                 <Chip
                                                     color={b.status === 'publish' ? "primary" : b.status === 'pending' ? "secondary" : "default"}
                                                     icon={b.status === 'publish' ? <PublicIcon /> : <CreateIcon />}
