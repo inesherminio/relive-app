@@ -437,7 +437,7 @@ const Imovel = ({ params, signedIn }) => {
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
     const objectiveStatus = data && data['imovel-estado'] && data['imovel-estado'].length ? data['imovel-estado'][0] === 77 ? 'A arrendar' : data['imovel-estado'][0] === 78 ? 'A vender' : data['imovel-estado'][0] === 174 ? 'Arrendado' : data['imovel-estado'][0] === 175 ? 'Vendido' : null : null
-    const type = data && data['imovel-tipo'] && data['imovel-tipo'].length ? data['imovel-tipo'][0] === 34 ? 'Moradia' : 'Apartamento' : null
+    const type = data && data['imovel-tipo'] && data['imovel-tipo'].length ? data['imovel-tipo'][0] === 34 ? 'Moradia' : data['imovel-tipo'].includes(91) ? 'Loja' : data['imovel-tipo'].includes(87) ? 'Escritorio' : 'Apartamento' : null
 
     /* console.log('Previous Imo', statusImoPrevious) */
 
