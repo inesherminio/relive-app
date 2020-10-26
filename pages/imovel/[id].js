@@ -488,7 +488,7 @@ const Imovel = ({ params, signedIn }) => {
                                 <LineChart
                                     width={500}
                                     height={300}
-                                    data={data.statistics}
+                                    data={data.statistics.reverse()}
                                     margin={{
                                         top: 5, right: 30, left: 20, bottom: 5,
                                     }}
