@@ -135,6 +135,31 @@ const Profile = (props) => {
             .catch(err => console.log(err))
     }
 
+
+    
+
+    const getDir = () => {
+        axios.get(`/idealista/directory`)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => console.log(err))
+    }
+    const getDown = () => {
+        axios.get(`/idealista/download`)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => console.log(err))
+    }
+    const getUp = () => {
+        axios.get(`/idealista/upload`)
+            .then(res => {
+                console.log(res)
+            })
+            .catch(err => console.log(err))
+    }
+
     if (loading)
         return <Loading message="A carregar profile" />;
     return (
@@ -156,9 +181,20 @@ const Profile = (props) => {
                     </Button>
                 }
 
-                <Button variant="contained" color="primary" disabled={prof.data.length === 0} onClick={() => getTax()}>
+                {/* <Button variant="contained" color="primary" disabled={prof.data.length === 0} onClick={() => getTax()}>
                     Get Taxonomy
+                </Button> */}
+
+                <Button variant="contained" color="primary" onClick={() => getDir()}>
+                    FTP DIR
                 </Button>
+                <Button variant="contained" color="primary" onClick={() => getDown()}>
+                    FTP Down
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => getUp()}>
+                    FTP UP
+                </Button>
+
 
                 <h3>Verifica se já possuis a nossa app <a target="_blank" href="https://www.imovirtual.com/contapessoal/definicoes-de-conta/#aplicacoes">aqui</a>, se visualizar a app Relive, revoga e clica em "Autenticar conta do Imovirtual"</h3>
 

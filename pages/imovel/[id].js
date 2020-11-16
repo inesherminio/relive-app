@@ -105,7 +105,7 @@ const isAvailable = (imoStatus, action, ImoPrevious = null) => { /* action can b
 
 const preSendData = (data) => {
 
-    const { content, id, link, property_meta, status, title, type } = data
+    const { content, id, link, property_meta, status, title, type, ideCode } = data
 
     const { REAL_HOMES_property_images } = property_meta
 
@@ -126,6 +126,7 @@ const preSendData = (data) => {
         id,
         link,
         status,
+        ideCode,
         type,
         title,
         content: { rendered: contentNoHTML.textContent || contentNoHTML.innerText || "" },
@@ -353,7 +354,7 @@ const Imovel = ({ params, signedIn }) => {
                         .catch(err => {
                             setData({ ...res.data, statistics: null })
                             setStatus(res.data.status)
-                            if (err.response.status === 403) {
+                            if (err.response && err.response.status === 403) {
                                 setStatusImo('Error Authentication')
                                 setInfo({
                                     error: true,
@@ -428,8 +429,106 @@ const Imovel = ({ params, signedIn }) => {
         setOpen('delete');
     }
 
-    const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
+    const handleIdealistaValidate = () => { /* Igual ao do Imovirtual, só muda o link e erroor message */
+        setLoading("A enviar pedido de validação Idealista")
+        axios.get(`/api/imoveis/${params.id}`)
+            .then(res => {
+                const sendData = preSendData(res.data)
+                axios.post(`/idealista/advert/validate`, {
+                    data: sendData
+                })
+                    .then(res2 => {
+                        setLoading(false)
+                        setPublish(true)
+                        setInfo({
+                            error: true,
+                            msg: res2.data.message || 'Idealista validado com sucesso!'
+                        })
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        setPublish(false)
+                        console.log(err)
+                        setInfo({
+                            error: true,
+                            msg: 'Idealista ERROR Validating Property: ' + err.response.data.error
+                        })
+                    })
+            })
+            .catch(err => {
+                setLoading(false)
+                setInfo({
+                    error: true,
+                    msg: 'Idealista ERROR Getting Property'
+                })
+                console.log(err)
+            })
+    }
 
+    const handleIdealistaPost = () => { /* Igual ao do Imovirtual, só muda o link e erroor message */
+        setLoading("A enviar pedido de publicação Idealista")
+        axios.get(`/api/imoveis/${params.id}`)
+            .then(res => {
+                const sendData = preSendData(res.data)
+                axios.post(`/idealista/advert/${params.id}`, {
+                    data: sendData
+                })
+                    .then(res => {
+                        setLoading(false)
+                        setPublish(false)
+                        setStatusImo('Publicação pendente')
+                        setInfo({
+                            error: false,
+                            msg: 'Pedido enviado com sucesso'
+                        })
+                        handleClose()
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        handleClose()
+                        console.log(err)
+                        setInfo({
+                            error: true,
+                            msg: 'Idealista ERROR Posting in Imovirtual: ' + err.response.data.error
+                        })
+                    })
+            })
+            .catch(err => {
+                setLoading(false)
+                setInfo({
+                    error: true,
+                    msg: 'Idealista ERROR Getting Property Info: ' + err.response.data.error
+                })
+                handleClose()
+                console.log(err)
+            })
+    }
+
+    const handleIdealistaDelete = () => {
+        setLoading("A enviar pedido de eliminação Idealista")
+        axios.delete(`/idealista/delete/${params.id}`)
+            .then(res => {
+                setLoading(false)
+                setPublish(false)
+                setInfo({
+                    error: false,
+                    msg: 'Pedido de eliminação Idealista enviado com sucesso'
+                })
+                handleClose()
+            })
+            .catch(err => {
+                setLoading(false)
+                handleClose()
+                console.log(err)
+                setInfo({
+                    error: true,
+                    msg: 'Idealista ERROR delete in Idealista: ' + err.response.data.error
+                })
+            })
+
+    }
+
+    const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
 
     const isWebsitePending = status === "pending" || status === "draft"
 
@@ -437,7 +536,13 @@ const Imovel = ({ params, signedIn }) => {
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
     const objectiveStatus = data && data['imovel-estado'] && data['imovel-estado'].length ? data['imovel-estado'][0] === 77 ? 'A arrendar' : data['imovel-estado'][0] === 78 ? 'A vender' : data['imovel-estado'][0] === 174 ? 'Arrendado' : data['imovel-estado'][0] === 175 ? 'Vendido' : null : null
-    const type = data && data['imovel-tipo'] && data['imovel-tipo'].length ? data['imovel-tipo'][0] === 34 ? 'Moradia' : data['imovel-tipo'].includes(91) ? 'Loja' : data['imovel-tipo'].includes(87) ? 'Escritorio' : 'Apartamento' : null
+    const type =
+        data && data['imovel-tipo'] && data['imovel-tipo'].length ?
+            data['imovel-tipo'][0] === 34 ?
+                'Moradia' : data['imovel-tipo'].includes(91) ?
+                    'Loja' : data['imovel-tipo'].includes(87) ?
+                        'Escritorio' : data['imovel-tipo'][0] === 194 ?
+                            'Terreno' : 'Apartamento' : null
 
     /* console.log('Previous Imo', statusImoPrevious) */
 
@@ -473,6 +578,16 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
+                                <h3>Estado Idealista: <span style={{ color: data.idealista ? '#82ca9d' : 'red' }}>{data.idealista ? 'Ativo' : 'Desativo'}</span></h3>
+                            </Grid>
+                            {data.idealista &&
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" target="_blank" href={`https://www.idealista.pt/${data.idealista}`}>Ver página</Button>
+                                </Grid>
+                            }
+                        </Grid>
+                        <Grid container justify="flex-start">
+                            <Grid item xs={4}>
                                 <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode === 'removed_by_user' ? statusImoPrevious === 'pending_deactivate' ? 'Desativado' : statusImoPrevious === 'pending_delete' ? 'Eliminado' : ImoStatusCode : ImoStatusCode}</span></h3>
                             </Grid>
                             {data.imovirtual && data.imovirtual.state &&
@@ -488,7 +603,7 @@ const Imovel = ({ params, signedIn }) => {
                                 <LineChart
                                     width={500}
                                     height={300}
-                                    data={data.statistics.reverse()}
+                                    data={data.statistics}
                                     margin={{
                                         top: 5, right: 30, left: 20, bottom: 5,
                                     }}
@@ -537,6 +652,18 @@ const Imovel = ({ params, signedIn }) => {
                         <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
                             {info.msg}
                         </p>
+                        <h2>Editar Idealista</h2>
+                        <Grid container justify="flex-end" className="action-container">
+                            <Button variant="contained" color="primary" disabled={false} onClick={() => handleIdealistaValidate()}>
+                                Validar Idealista
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={false} onClick={() => handleIdealistaPost()}>
+                                {data.idealista ? "Actualizar Idealista" : "Publicar Idealista"}
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={!data.idealista} onClick={() => handleIdealistaDelete()}>
+                                Eliminar do Idealista
+                            </Button>
+                        </Grid>
                     </>
                     :
                     "Propriedade não encontrada ou problema de autenticação"
