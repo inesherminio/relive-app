@@ -546,6 +546,8 @@ const Imovel = ({ params, signedIn }) => {
 
     /* console.log('Previous Imo', statusImoPrevious) */
 
+    const disableIde = data.idealista === 'delete' || data.idealista === 'pending'
+
     if (loading)
         return <Loading message={loading} />;
 
@@ -578,9 +580,9 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
-                                <h3>Estado Idealista: <span style={{ color: data.idealista ? '#82ca9d' : 'red' }}>{data.idealista ? 'Ativo' : 'Desativo'}</span></h3>
+                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista ? 'red' : '#82ca9d' }}>{data.idealista === 'delete' ? 'Eliminado' : data.idealista === 'pending' ? 'Pending' : data.idealista ? 'Activo' : 'Desativo'}</span></h3>
                             </Grid>
-                            {data.idealista &&
+                            {data.idealista && !disableIde &&
                                 <Grid item xs={3}>
                                     <Button variant="contained" color="primary" target="_blank" href={`https://www.idealista.pt/${data.idealista}`}>Ver página</Button>
                                 </Grid>
@@ -590,7 +592,7 @@ const Imovel = ({ params, signedIn }) => {
                             <Grid item xs={4}>
                                 <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode === 'removed_by_user' ? statusImoPrevious === 'pending_deactivate' ? 'Desativado' : statusImoPrevious === 'pending_delete' ? 'Eliminado' : ImoStatusCode : ImoStatusCode}</span></h3>
                             </Grid>
-                            {data.imovirtual && data.imovirtual.state &&
+                            {data.imovirtual && data.imovirtual.state && ImoStatusCode !== 'removed_by_user' &&
                                 <Grid item xs={3}>
                                     <Button variant="contained" color="primary" target="_blank" href={data.imovirtual.state.url}>Ver página</Button>
                                 </Grid>
@@ -654,13 +656,13 @@ const Imovel = ({ params, signedIn }) => {
                         </p>
                         <h2>Editar Idealista</h2>
                         <Grid container justify="flex-end" className="action-container">
-                            <Button variant="contained" color="primary" disabled={false} onClick={() => handleIdealistaValidate()}>
+                            <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaValidate()}>
                                 Validar Idealista
                             </Button>
-                            <Button variant="contained" color="primary" disabled={false} onClick={() => handleIdealistaPost()}>
-                                {data.idealista ? "Actualizar Idealista" : "Publicar Idealista"}
+                            <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaPost()}>
+                                {data.idealista && !disableIde ? "Actualizar Idealista" : "Publicar Idealista"}
                             </Button>
-                            <Button variant="contained" color="primary" disabled={!data.idealista} onClick={() => handleIdealistaDelete()}>
+                            <Button variant="contained" color="primary" disabled={data.idealista === 'delete' || !data.idealista} onClick={() => handleIdealistaDelete()}>
                                 Eliminar do Idealista
                             </Button>
                         </Grid>
