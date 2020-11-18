@@ -105,7 +105,7 @@ const isAvailable = (imoStatus, action, ImoPrevious = null) => { /* action can b
 
 const preSendData = (data) => {
 
-    const { content, id, link, property_meta, status, title, type, ideCode } = data
+    const { content, id, link, property_meta, status, title, type } = data
 
     const { REAL_HOMES_property_images } = property_meta
 
@@ -126,7 +126,6 @@ const preSendData = (data) => {
         id,
         link,
         status,
-        ideCode,
         type,
         title,
         content: { rendered: contentNoHTML.textContent || contentNoHTML.innerText || "" },
@@ -580,7 +579,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
-                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista ? 'red' : '#82ca9d' }}>{data.idealista === 'delete' ? 'Eliminado' : data.idealista === 'pending' ? 'Pending' : data.idealista ? 'Activo' : 'Desativo'}</span></h3>
+                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista ? 'red' : '#82ca9d' }}>{data.ideCode === 'delete' ? 'Eliminado' : data.ideCode === 'pending' ? 'Pending' : data.ideCode === 'active' ? 'Activo' : data.ideCode === 'pending_request' ? 'Pending Request' : 'Desativo'}</span></h3>
                             </Grid>
                             {data.idealista && !disableIde &&
                                 <Grid item xs={3}>
