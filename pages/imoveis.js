@@ -115,15 +115,20 @@ const Imoveis = (props) => {
                     .then(res2 => {
                         const newData = []
                         let auxFind = false
+                        let IdeFind = false
                         res.data.map(d => {
                             auxFind = false
+                            IdeFind = false
                             res2.data.adverts.map(a => {
-                                if (a.website == d.id)
+                                if (a.website == d.id) {
+                                    IdeFind = a.ideCode
                                     return auxFind = a.status
+                                }
                             })
                             newData.push({
                                 ...d,
                                 inImovirtual: auxFind,
+                                inIdealista: IdeFind
 
                             })
                         })
@@ -148,6 +153,9 @@ const Imoveis = (props) => {
             })
     }, []);
 
+
+
+
     if (error)
         return <Error message="Could not load Website properties, Please try later" />;
     if (loading)
@@ -171,39 +179,40 @@ const Imoveis = (props) => {
                         <List className="lista">
                             {properties.map((b, i) => {
                                 const media = b._embedded["wp:featuredmedia"]
+                                const sold = b["imovel-estado"].includes(174) || b["imovel-estado"].includes(175) /* Vendido ou Arrendado */
                                 return (
                                     <Link as={`/imovel/${b.id}`} href={`/imovel/?id=${b.id}`} key={b.id}>
-                                        <ListItem key={b.id} button className="lista-item">
-                                            <ListItemAvatar>
-                                                <Avatar
-                                                    className="avatar"
-                                                    variant="rounded"
-                                                    alt={`Propriedade ID:${b.id}`}
-                                                    src={media && media[0].source_url}
-                                                />
-                                            </ListItemAvatar>
-                                            {/* <ListItemText className="lista-text" id={b.id} primary={b.title.rendered} /> */}
-                                            <h2 className="lista-text">{b.title.rendered}</h2>
-                                            <ListItemSecondaryAction>
-                                                {(b["imovel-estado"].includes(174) || b["imovel-estado"].includes(175)) && /* Vendido ou Arrendado */
-                                                    <Chip
-                                                        color="primary"
-                                                        icon={<CheckCircleIcon />}
-                                                        label="Vendido"
+                                        <a className="nostyle">
+                                            <ListItem key={b.id} button className="lista-item" style={{ backgroundColor: sold ? '#e1ffde' : null }}>
+                                                <ListItemAvatar>
+                                                    <Avatar
+                                                        className="avatar"
+                                                        variant="rounded"
+                                                        alt={`Propriedade ID:${b.id}`}
+                                                        src={media && media[0].source_url}
                                                     />
-                                                }
-                                                <Chip
-                                                    color={b.status === 'publish' ? "primary" : b.status === 'pending' ? "secondary" : "default"}
-                                                    icon={b.status === 'publish' ? <PublicIcon /> : <CreateIcon />}
-                                                    label={b.status === 'publish' ? "Publicado" : b.status === 'pending' ? "Revisão pendente" : "Rascunho"}
-                                                />
-                                                <Chip
-                                                    color={b.inImovirtual ? "primary" : "secondary"}
-                                                    icon={b.inImovirtual === 'active' ? <CheckCircleIcon /> : <CancelIcon />}
-                                                    label={b.inImovirtual === 'active' ? "Imovirtual" : b.inImovirtual ? "Imovirtual " + b.inImovirtual : "Imovirtual"}
-                                                />
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
+                                                </ListItemAvatar>
+                                                {/* <ListItemText className="lista-text" id={b.id} primary={b.title.rendered} /> */}
+                                                <h2 className="lista-text">{b.title.rendered}</h2>
+                                                <ListItemSecondaryAction>
+                                                    <Chip
+                                                        color={b.status === 'publish' ? "primary" : b.status === 'pending' ? "secondary" : "default"}
+                                                        icon={b.status === 'publish' ? <PublicIcon /> : <CreateIcon />}
+                                                        label={b.status === 'publish' ? "Publico" : b.status === 'pending' ? "Em Revisão" : "Rascunho"}
+                                                    />
+                                                    <Chip
+                                                        color={b.inImovirtual ? "primary" : "secondary"}
+                                                        icon={b.inImovirtual === 'active' ? <CheckCircleIcon /> : <CancelIcon />}
+                                                        label={b.inImovirtual === 'active' ? "Imovirtual" : b.inImovirtual ? "Imovirtual " + b.inImovirtual : "Imovirtual"}
+                                                    />
+                                                    <Chip
+                                                        color={b.inIdealista ? "primary" : "secondary"}
+                                                        icon={b.inIdealista === 'active' ? <CheckCircleIcon /> : <CancelIcon />}
+                                                        label={b.inIdealista === 'active' ? "Idealista" : b.inIdealista ? "Idealista " + b.inIdealista : "Idealista"}
+                                                    />
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                        </a>
                                     </Link>
                                 )
                             })}

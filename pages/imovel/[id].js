@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import moment from 'moment'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
@@ -152,6 +153,7 @@ const Imovel = ({ params, signedIn }) => {
     });
     const [status, setStatus] = useState(null);
     const [statusImo, setStatusImo] = useState(null);
+    const [statusIde, setStatusIde] = useState(null);
     const [statusImoPrevious, setStatusImoPrevious] = useState(null);
 
     const postImo = () => {
@@ -336,7 +338,14 @@ const Imovel = ({ params, signedIn }) => {
                             axios.get(`/imovirtual/advert/${res.data.imovirtual}/statistics`)
                                 .then(res3 => {
                                     setLoading(false)
-                                    setData({ ...res.data, imovirtual: res2.data.data, statistics: res3.data.data })
+                                    const stats = res3.data.data.map(s => {
+                                        const dateObj = moment(s.date, 'YYYY-MM-DD')
+                                        return {
+                                            ...s,
+                                            date: dateObj.format('DD/MM')
+                                        }
+                                    })
+                                    setData({ ...res.data, imovirtual: res2.data.data, statistics: stats.reverse() })
                                     setStatusImo(res2.data.imoCode) /* data.state.code */
                                     setStatusImoPrevious(res2.data.prevImoCode)
                                     setStatus(res.data.status)
@@ -353,7 +362,7 @@ const Imovel = ({ params, signedIn }) => {
                         .catch(err => {
                             setData({ ...res.data, statistics: null })
                             setStatus(res.data.status)
-                            if (err.response.status === 403) {
+                            if (err.response && err.response.status === 403) {
                                 setStatusImo('Error Authentication')
                                 setInfo({
                                     error: true,
@@ -428,21 +437,129 @@ const Imovel = ({ params, signedIn }) => {
         setOpen('delete');
     }
 
-    const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
+    const handleIdealistaValidate = () => { /* Igual ao do Imovirtual, só muda o link e erroor message */
+        setLoading("A enviar pedido de validação Idealista")
+        axios.get(`/api/imoveis/${params.id}`)
+            .then(res => {
+                const sendData = preSendData(res.data)
+                axios.post(`/idealista/advert/validate`, {
+                    data: sendData
+                })
+                    .then(res2 => {
+                        setLoading(false)
+                        setPublish(true)
+                        setInfo({
+                            error: true,
+                            msg: res2.data.message || 'Idealista validado com sucesso!'
+                        })
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        setPublish(false)
+                        console.log(err)
+                        setInfo({
+                            error: true,
+                            msg: 'Idealista ERROR Validating Property: ' + err.response.data.error
+                        })
+                    })
+            })
+            .catch(err => {
+                setLoading(false)
+                setInfo({
+                    error: true,
+                    msg: 'Idealista ERROR Getting Property'
+                })
+                console.log(err)
+            })
+    }
 
+    const handleIdealistaPost = () => { /* Igual ao do Imovirtual, só muda o link e erroor message */
+        setLoading("A enviar pedido de publicação Idealista")
+        axios.get(`/api/imoveis/${params.id}`)
+            .then(res => {
+                const sendData = preSendData(res.data)
+                axios.post(`/idealista/advert/${params.id}`, {
+                    data: sendData
+                })
+                    .then(res2 => {
+                        setLoading(false)
+                        setPublish(false)
+                        setStatusIde('pending_request')
+                        setInfo({
+                            error: false,
+                            msg: 'Pedido enviado com sucesso'
+                        })
+                        handleClose()
+                    })
+                    .catch(err => {
+                        setLoading(false)
+                        handleClose()
+                        console.log(err)
+                        setInfo({
+                            error: true,
+                            msg: 'Idealista ERROR Posting in Imovirtual: ' + err.response.data.error
+                        })
+                    })
+            })
+            .catch(err => {
+                setLoading(false)
+                setInfo({
+                    error: true,
+                    msg: 'Idealista ERROR Getting Property Info: ' + err.response.data.error
+                })
+                handleClose()
+                console.log(err)
+            })
+    }
+
+    const handleIdealistaDelete = () => {
+        setLoading("A enviar pedido de eliminação Idealista")
+        axios.delete(`/idealista/delete/${params.id}`)
+            .then(res => {
+                setLoading(false)
+                setPublish(false)
+                setStatusIde('Eliminação pendente')
+                setInfo({
+                    error: false,
+                    msg: 'Pedido de eliminação Idealista enviado com sucesso'
+                })
+                handleClose()
+            })
+            .catch(err => {
+                setLoading(false)
+                handleClose()
+                console.log(err)
+                setInfo({
+                    error: true,
+                    msg: 'Idealista ERROR delete in Idealista: ' + err.response.data.error
+                })
+            })
+
+    }
+
+    const displayStatus = status === "draft" ? "Rascunho" : status === "pending" ? "Revisão Pendente" : "Publico"
 
     const isWebsitePending = status === "pending" || status === "draft"
 
     const ImoStatusCode = statusImo || 'Not published'
+    const IdeStatusCode = statusIde || data.ideCode || 'Desativo'
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
     const objectiveStatus = data && data['imovel-estado'] && data['imovel-estado'].length ? data['imovel-estado'][0] === 77 ? 'A arrendar' : data['imovel-estado'][0] === 78 ? 'A vender' : data['imovel-estado'][0] === 174 ? 'Arrendado' : data['imovel-estado'][0] === 175 ? 'Vendido' : null : null
-    const type = data && data['imovel-tipo'] && data['imovel-tipo'].length ? data['imovel-tipo'][0] === 34 ? 'Moradia' : data['imovel-tipo'].includes(91) ? 'Loja' : data['imovel-tipo'].includes(87) ? 'Escritorio' : 'Apartamento' : null
+    const type =
+        data && data['imovel-tipo'] && data['imovel-tipo'].length ?
+            data['imovel-tipo'][0] === 34 ?
+                'Moradia' : data['imovel-tipo'].includes(91) ?
+                    'Loja' : data['imovel-tipo'].includes(87) ?
+                        'Escritorio' : data['imovel-tipo'][0] === 194 ?
+                            'Terreno' : 'Apartamento' : null
 
     /* console.log('Previous Imo', statusImoPrevious) */
 
+    const disableIde = data.idealista === 'delete' || data.idealista === 'pending'
+
     if (loading)
-        return <Loading message={loading} />;
+        return <Loading message={loading} />
 
     return (
         <Layout
@@ -473,14 +590,28 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
+                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista || IdeStatusCode === 'pending_request' ? 'red' : '#82ca9d' }}>{IdeStatusCode === 'delete' ? 'Eliminado' : IdeStatusCode === 'pending' ? 'Pending' : IdeStatusCode === 'active' ? 'Activo' : IdeStatusCode === 'pending_request' ? 'Pending Request' : IdeStatusCode}</span></h3>
+                            </Grid>
+                            {data.idealista && !disableIde &&
+                                <Grid item xs={3}>
+                                    <Button variant="contained" color="primary" target="_blank" href={`https://www.idealista.pt/${data.idealista}`}>Ver página</Button>
+                                </Grid>
+                            }
+                        </Grid>
+                        <Grid container justify="flex-start">
+                            <Grid item xs={4}>
                                 <h3>Estado Imovirtual: <span style={{ color: ImoStatusCode === 'active' ? '#82ca9d' : 'red' }}>{ImoStatusCode === 'removed_by_user' ? statusImoPrevious === 'pending_deactivate' ? 'Desativado' : statusImoPrevious === 'pending_delete' ? 'Eliminado' : ImoStatusCode : ImoStatusCode}</span></h3>
                             </Grid>
-                            {data.imovirtual && data.imovirtual.state &&
+                            {data.imovirtual && data.imovirtual.state && ImoStatusCode !== 'removed_by_user' &&
                                 <Grid item xs={3}>
                                     <Button variant="contained" color="primary" target="_blank" href={data.imovirtual.state.url}>Ver página</Button>
                                 </Grid>
                             }
                         </Grid>
+
+                        <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
+                            {info.msg}
+                        </p>
 
                         {data.statistics &&
                             <>
@@ -488,7 +619,7 @@ const Imovel = ({ params, signedIn }) => {
                                 <LineChart
                                     width={500}
                                     height={300}
-                                    data={data.statistics.reverse()}
+                                    data={data.statistics}
                                     margin={{
                                         top: 5, right: 30, left: 20, bottom: 5,
                                     }}
@@ -534,9 +665,18 @@ const Imovel = ({ params, signedIn }) => {
                                 Eliminar do Imovirtual
                             </Button>
                         </Grid>
-                        <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
-                            {info.msg}
-                        </p>
+                        <h2>Editar Idealista</h2>
+                        <Grid container justify="flex-end" className="action-container">
+                            <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaValidate()}>
+                                Validar Idealista
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaPost()}>
+                                {data.idealista && !disableIde ? "Actualizar Idealista" : "Publicar Idealista"}
+                            </Button>
+                            <Button variant="contained" color="primary" disabled={data.idealista === 'delete' || !data.idealista} onClick={() => handleIdealistaDelete()}>
+                                Eliminar do Idealista
+                            </Button>
+                        </Grid>
                     </>
                     :
                     "Propriedade não encontrada ou problema de autenticação"
