@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import moment from 'moment'
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
@@ -152,6 +153,7 @@ const Imovel = ({ params, signedIn }) => {
     });
     const [status, setStatus] = useState(null);
     const [statusImo, setStatusImo] = useState(null);
+    const [statusIde, setStatusIde] = useState(null);
     const [statusImoPrevious, setStatusImoPrevious] = useState(null);
 
     const postImo = () => {
@@ -336,7 +338,14 @@ const Imovel = ({ params, signedIn }) => {
                             axios.get(`/imovirtual/advert/${res.data.imovirtual}/statistics`)
                                 .then(res3 => {
                                     setLoading(false)
-                                    setData({ ...res.data, imovirtual: res2.data.data, statistics: res3.data.data })
+                                    const stats = res3.data.data.map(s => {
+                                        const dateObj = moment(s.date, 'YYYY-MM-DD')
+                                        return {
+                                            ...s,
+                                            date: dateObj.format('DD/MM')
+                                        }
+                                    })
+                                    setData({ ...res.data, imovirtual: res2.data.data, statistics: stats.reverse() })
                                     setStatusImo(res2.data.imoCode) /* data.state.code */
                                     setStatusImoPrevious(res2.data.prevImoCode)
                                     setStatus(res.data.status)
@@ -472,10 +481,10 @@ const Imovel = ({ params, signedIn }) => {
                 axios.post(`/idealista/advert/${params.id}`, {
                     data: sendData
                 })
-                    .then(res => {
+                    .then(res2 => {
                         setLoading(false)
                         setPublish(false)
-                        setStatusImo('Publicação pendente')
+                        setStatusIde('pending_request')
                         setInfo({
                             error: false,
                             msg: 'Pedido enviado com sucesso'
@@ -509,6 +518,7 @@ const Imovel = ({ params, signedIn }) => {
             .then(res => {
                 setLoading(false)
                 setPublish(false)
+                setStatusIde('Eliminação pendente')
                 setInfo({
                     error: false,
                     msg: 'Pedido de eliminação Idealista enviado com sucesso'
@@ -532,6 +542,7 @@ const Imovel = ({ params, signedIn }) => {
     const isWebsitePending = status === "pending" || status === "draft"
 
     const ImoStatusCode = statusImo || 'Not published'
+    const IdeStatusCode = statusIde || data.ideCode || 'Desativo'
     const isImoPending = ImoStatusCode.includes('pending') || ImoStatusCode.includes('pendente') ? true : false
 
     const objectiveStatus = data && data['imovel-estado'] && data['imovel-estado'].length ? data['imovel-estado'][0] === 77 ? 'A arrendar' : data['imovel-estado'][0] === 78 ? 'A vender' : data['imovel-estado'][0] === 174 ? 'Arrendado' : data['imovel-estado'][0] === 175 ? 'Vendido' : null : null
@@ -548,7 +559,7 @@ const Imovel = ({ params, signedIn }) => {
     const disableIde = data.idealista === 'delete' || data.idealista === 'pending'
 
     if (loading)
-        return <Loading message={loading} />;
+        return <Loading message={loading} />
 
     return (
         <Layout
@@ -579,7 +590,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
-                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista ? 'red' : '#82ca9d' }}>{data.ideCode === 'delete' ? 'Eliminado' : data.ideCode === 'pending' ? 'Pending' : data.ideCode === 'active' ? 'Activo' : data.ideCode === 'pending_request' ? 'Pending Request' : 'Desativo'}</span></h3>
+                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista || IdeStatusCode === 'pending_request' ? 'red' : '#82ca9d' }}>{IdeStatusCode === 'delete' ? 'Eliminado' : IdeStatusCode === 'pending' ? 'Pending' : IdeStatusCode === 'active' ? 'Activo' : IdeStatusCode === 'pending_request' ? 'Pending Request' : IdeStatusCode}</span></h3>
                             </Grid>
                             {data.idealista && !disableIde &&
                                 <Grid item xs={3}>
@@ -597,6 +608,10 @@ const Imovel = ({ params, signedIn }) => {
                                 </Grid>
                             }
                         </Grid>
+
+                        <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
+                            {info.msg}
+                        </p>
 
                         {data.statistics &&
                             <>
@@ -650,9 +665,6 @@ const Imovel = ({ params, signedIn }) => {
                                 Eliminar do Imovirtual
                             </Button>
                         </Grid>
-                        <p style={{ color: info.error ? 'red' : 'green', fontWeight: 500, textAlign: 'center' }}>
-                            {info.msg}
-                        </p>
                         <h2>Editar Idealista</h2>
                         <Grid container justify="flex-end" className="action-container">
                             <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaValidate()}>
