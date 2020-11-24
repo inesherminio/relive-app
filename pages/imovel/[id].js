@@ -667,11 +667,11 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <h2>Editar Idealista</h2>
                         <Grid container justify="flex-end" className="action-container">
-                            <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaValidate()}>
+                            <Button variant="contained" color="primary" /* disabled={data.idealista === 'pending'} */ onClick={() => handleIdealistaValidate()}>
                                 Validar Idealista
                             </Button>
-                            <Button variant="contained" color="primary" disabled={data.idealista === 'pending'} onClick={() => handleIdealistaPost()}>
-                                {data.idealista && !disableIde ? "Actualizar Idealista" : "Publicar Idealista"}
+                            <Button variant="contained" color="primary" /* disabled={data.idealista === 'pending'} */ onClick={() => handleIdealistaPost()}>
+                                {data.idealista && data.idealista !== 'delete' ? "Actualizar Idealista" : "Publicar Idealista"}
                             </Button>
                             <Button variant="contained" color="primary" disabled={data.idealista === 'delete' || !data.idealista} onClick={() => handleIdealistaDelete()}>
                                 Eliminar do Idealista
