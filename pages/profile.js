@@ -136,8 +136,6 @@ const Profile = (props) => {
     }
 
 
-    
-
     const getDir = () => {
         axios.get(`/idealista/directory`)
             .then(res => {
@@ -185,7 +183,7 @@ const Profile = (props) => {
                     Get Taxonomy
                 </Button> */}
 
-                <Button variant="contained" color="primary" onClick={() => getDir()}>
+                {/* <Button variant="contained" color="primary" onClick={() => getDir()}>
                     FTP DIR
                 </Button>
                 <Button variant="contained" color="primary" onClick={() => getDown()}>
@@ -193,7 +191,11 @@ const Profile = (props) => {
                 </Button>
                 <Button variant="contained" color="primary" onClick={() => getUp()}>
                     FTP UP
-                </Button>
+                </Button> */}
+
+                {/* <Button variant="contained" color="primary" onClick={() => getIdeStats()}>
+                    Download Idealista Stats
+                </Button> */}
 
 
                 <h3>Verifica se já possuis a nossa app <a target="_blank" href="https://www.imovirtual.com/contapessoal/definicoes-de-conta/#aplicacoes">aqui</a>, se visualizar a app Relive, revoga e clica em "Autenticar conta do Imovirtual"</h3>
