@@ -590,7 +590,7 @@ const Imovel = ({ params, signedIn }) => {
                         </Grid>
                         <Grid container justify="flex-start">
                             <Grid item xs={4}>
-                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista || IdeStatusCode === 'pending_request' ? 'red' : '#82ca9d' }}>{IdeStatusCode === 'delete' ? 'Eliminado' : IdeStatusCode === 'pending' ? 'Pending' : IdeStatusCode === 'active' ? 'Activo' : IdeStatusCode === 'pending_request' ? 'Pending Request' : IdeStatusCode}</span></h3>
+                                <h3>Estado Idealista: <span style={{ color: disableIde || !data.idealista || IdeStatusCode === 'pending_request' || IdeStatusCode === 'Desativo' ? 'red' : '#82ca9d' }}>{IdeStatusCode === 'delete' ? 'Eliminado' : IdeStatusCode === 'pending' ? 'Pending' : IdeStatusCode === 'active' ? 'Activo' : IdeStatusCode === 'pending_request' ? 'Pending Request' : IdeStatusCode}</span></h3>
                             </Grid>
                             {data.idealista && !disableIde &&
                                 <Grid item xs={3}>
