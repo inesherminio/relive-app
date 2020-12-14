@@ -179,9 +179,9 @@ const Profile = (props) => {
                     </Button>
                 }
 
-                {/* <Button variant="contained" color="primary" disabled={prof.data.length === 0} onClick={() => getTax()}>
+                <Button variant="contained" color="primary" disabled={prof.data.length === 0} onClick={() => getTax()}>
                     Get Taxonomy
-                </Button> */}
+                </Button>
 
                 {/* <Button variant="contained" color="primary" onClick={() => getDir()}>
                     FTP DIR
