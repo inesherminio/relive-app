@@ -552,7 +552,8 @@ const Imovel = ({ params, signedIn }) => {
                 'Moradia' : data['imovel-tipo'].includes(91) ?
                     'Loja' : data['imovel-tipo'].includes(87) ?
                         'Escritorio' : data['imovel-tipo'][0] === 194 ?
-                            'Terreno' : 'Apartamento' : null
+                            'Terreno' : data['imovel-tipo'][0] === 192 ? 
+                            'Prédio' : 'Apartamento' : null
 
     /* console.log('Previous Imo', statusImoPrevious) */
 
