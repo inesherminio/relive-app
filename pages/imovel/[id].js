@@ -104,7 +104,7 @@ const isAvailable = (imoStatus, action, ImoPrevious = null) => { /* action can b
 
 }
 
-const preSendData = (data) => {
+const preSendData = (data, imoState = null) => {
 
     const { content, id, link, property_meta, status, title, type } = data
 
@@ -123,8 +123,13 @@ const preSendData = (data) => {
             return tmp.textContent || tmp.innerText || "";
         } */
 
+
+    const timestamp = moment().unix()
+
     return {
         id,
+        timestamp,
+        alreadyImo: imoState && imoState === 'removed_by_user',
         link,
         status,
         type,
@@ -160,7 +165,7 @@ const Imovel = ({ params, signedIn }) => {
         setLoading("A enviar pedido de publicação a Imovirtual")
         axios.get(`/api/imoveis/${params.id}`)
             .then(res => {
-                const sendData = preSendData(res.data)
+                const sendData = preSendData(res.data, statusImo)
                 axios.post(`/imovirtual/advert/${params.id}`, {
                     data: sendData
                 })
