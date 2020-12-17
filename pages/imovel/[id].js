@@ -338,9 +338,12 @@ const Imovel = ({ params, signedIn }) => {
                 if (res.data.imovirtual) {
                     axios.get(`/imovirtual/advert/${res.data.imovirtual}`)
                         .then(res2 => {
-                            /* setLoading(false)
-                               setData({ ...res.data, imovirtual: res2.data.data }) */
-                            axios.get(`/imovirtual/advert/${res.data.imovirtual}/statistics`)
+                            setLoading(false)
+                            setStatus(res.data.status)
+                            setStatusImo(res2.data.imoCode)
+                            setStatusImoPrevious(res2.data.prevImoCode)
+                            setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
+                            /* axios.get(`/imovirtual/advert/${res.data.imovirtual}/statistics`)
                                 .then(res3 => {
                                     setLoading(false)
                                     const stats = res3.data.data.map(s => {
@@ -351,18 +354,18 @@ const Imovel = ({ params, signedIn }) => {
                                         }
                                     })
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: stats.reverse() })
-                                    setStatusImo(res2.data.imoCode) /* data.state.code */
+                                    setStatusImo(res2.data.imoCode)
                                     setStatusImoPrevious(res2.data.prevImoCode)
                                     setStatus(res.data.status)
                                 })
                                 .catch(err => {
                                     setLoading(false)
                                     setStatus(res.data.status)
-                                    setStatusImo(res2.data.imoCode) /* data.state.code */
+                                    setStatusImo(res2.data.imoCode)
                                     setStatusImoPrevious(res2.data.prevImoCode)
                                     setData({ ...res.data, imovirtual: res2.data.data, statistics: null })
                                     console.log(err)
-                                })
+                                }) */
                         })
                         .catch(err => {
                             setData({ ...res.data, statistics: null })
@@ -557,8 +560,8 @@ const Imovel = ({ params, signedIn }) => {
                 'Moradia' : data['imovel-tipo'].includes(91) ?
                     'Loja' : data['imovel-tipo'].includes(87) ?
                         'Escritorio' : data['imovel-tipo'][0] === 194 ?
-                            'Terreno' : data['imovel-tipo'][0] === 192 ? 
-                            'Prédio' : 'Apartamento' : null
+                            'Terreno' : data['imovel-tipo'][0] === 192 ?
+                                'Prédio' : 'Apartamento' : null
 
     /* console.log('Previous Imo', statusImoPrevious) */
 
