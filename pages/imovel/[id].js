@@ -424,8 +424,7 @@ const Imovel = ({ params, signedIn }) => {
 
     const handlePublish = () => {
         axios.put(`/api/imoveis/${data.id}`, {
-            /* ...data, */
-            status: "draft" /* publish */
+            status: "publish" /* draft */
         })
             .then(res => {
                 console.log(res)
