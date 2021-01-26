@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import Grid from '@material-ui/core/Grid';
-import Chip from '@material-ui/core/Chip';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Container from '@material-ui/core/Container';
+import { useState, useEffect } from "react"
+import axios from "axios"
+import Grid from '@material-ui/core/Grid'
+import Chip from '@material-ui/core/Chip'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import Avatar from '@material-ui/core/Avatar'
+import Container from '@material-ui/core/Container'
 
-import Link from "next/link";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import Loading from "../components/Loading";
-import Error from "./_error";
+import Link from "next/link"
+import Head from "next/head"
+import Layout from "../components/Layout"
+import Loading from "../components/Loading"
+import Error from "./_error"
 
 import PublicIcon from '@material-ui/icons/Public'
 import CreateIcon from '@material-ui/icons/Create'
@@ -21,7 +21,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CancelIcon from '@material-ui/icons/Cancel'
 
 import { auth } from '../utils/auth'
-import { Button } from "@material-ui/core";
+import { Button } from "@material-ui/core"
 
 
 /* import WPAPI from 'wpapi'  */
@@ -250,14 +250,16 @@ const Imoveis = (props) => {
                         }
                     </Grid> */}
                 </Grid>
-                {page > 1 &&
-                    <Button onClick={() => changePage(page - 1)}>
-                        Back
+                <Grid container>
+                    {page > 1 &&
+                        <Button variant="contained" color="secondary" onClick={() => changePage(page - 1)}>
+                            Back
+                        </Button>
+                    }
+                    <Button variant="contained" color="primary" onClick={() => changePage(page + 1)}>
+                        Next
                     </Button>
-                }
-                <Button onClick={() => changePage(page + 1)}>
-                    Next
-                </Button>
+                </Grid>
             </Container>
         </Layout>
     );
