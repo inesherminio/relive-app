@@ -21,6 +21,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CancelIcon from '@material-ui/icons/Cancel'
 
 import { auth } from '../utils/auth'
+import { Button } from "@material-ui/core";
 
 
 /* import WPAPI from 'wpapi'  */
@@ -71,6 +72,7 @@ site.imoveis().then(d => console.log(d)); */
 const Imoveis = (props) => {
     const [properties, setProperties] = useState([]);
     const [imoProperties, setImoProperties] = useState([]);
+    const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [ImoError, setImoError] = useState(null);
@@ -108,9 +110,18 @@ const Imoveis = (props) => {
 
 
     useEffect(() => {
-        axios.get("/api/imoveis")
-            .then(res => {
+        getPage()
+    }, []);
 
+    const changePage = (page) => {
+        getPage(page)
+        setPage(page)
+    }
+
+
+    const getPage = (page = 1) => {
+        axios.get("/api/imoveis?page=" + page)
+            .then(res => {
                 axios.get("/imovirtual/adverts/database")
                     .then(res2 => {
                         const newData = []
@@ -151,7 +162,7 @@ const Imoveis = (props) => {
                 setError(true)
                 console.log(err)
             })
-    }, []);
+    }
 
 
 
@@ -239,6 +250,14 @@ const Imoveis = (props) => {
                         }
                     </Grid> */}
                 </Grid>
+                {page > 1 &&
+                    <Button onClick={() => changePage(page - 1)}>
+                        Back
+                    </Button>
+                }
+                <Button onClick={() => changePage(page + 1)}>
+                    Next
+                </Button>
             </Container>
         </Layout>
     );
