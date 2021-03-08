@@ -190,7 +190,7 @@ const Imoveis = (props) => {
                         }
                         <List className="lista">
                             {properties.map((b, i) => {
-                                const media = b._embedded["wp:featuredmedia"]
+                                const media = b._embedded ? b._embedded["wp:featuredmedia"] : null
                                 const sold = b["imovel-estado"].includes(174) || b["imovel-estado"].includes(175) /* Vendido ou Arrendado */
                                 return (
                                     <Link as={`/imovel/${b.id}`} href={`/imovel/?id=${b.id}`} key={b.id}>
